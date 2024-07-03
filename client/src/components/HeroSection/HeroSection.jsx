@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 
 export default function HeroSection() {
     return (
-        <section className='h-fit w-fit flex items-center pt-16 pb-5 px-5 lg:px-14 lg:h-screen'>
+        <section className='h-fit w-full flex items-center pt-16 pb-5 px-5 lg:px-14 lg:h-screen'>
             <div className='flex flex-col lg:flex-row h-full w-full p-7 gap-8 bg-[#FFF5C3] rounded-lg'>
                 <div className='lg:w-1/2 flex flex-col justify-start gap-6 p-3 border-2 border-dashed border-black rounded-md'>
                     <h1 className='text-6xl font-bold break-words'>
