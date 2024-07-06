@@ -36,7 +36,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: "N/A",
     },
-    refreshToken: String,
+    refreshToken: {
+      type: String,
+      default: "",
+    },
     isVerified: {
       type: Boolean,
       default: false, // Set default value to false

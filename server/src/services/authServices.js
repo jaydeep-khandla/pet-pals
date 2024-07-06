@@ -9,16 +9,16 @@ class UserService {
     return await User.find();
   }
 
-  async getUserByEmail(email) {
-    return await User.findOne({ email });
+  async getUserByField(field) {
+    return await User.findOne(field);
   }
 
   async getUserById(id) {
     return await User.findById(id);
   }
 
-  async updateUser(id, user) {
-    return await User.findByIdAndUpdate(id, user);
+  async updateUserByField(filter, update) {
+    return await User.findOneAndUpdate(filter, update);
   }
 
   async deleteUser(id) {

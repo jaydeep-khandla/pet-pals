@@ -7,8 +7,7 @@ router.post('/signup', authController.signup);
 
 router.post('/login', authController.login);
 
-router.get('/verify', authController.verifyOtp);
-
+router.post('/verify', authController.verifyOtp);
 
 router.get('/refresh', verifyToken, authController.refreshJWToken);
 

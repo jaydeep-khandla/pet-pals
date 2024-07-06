@@ -15,6 +15,11 @@ const userLoginSchema = Joi.object({
   password: Joi.string().required(),
 });
 
+const optSchema = Joi.object({
+  email: Joi.string().email().required(),
+  otp: Joi.string().required(),
+});
+
 // idSchema is used to validate the request parameter
 const idSchema = Joi.string()
   .regex(/^[0-9a-fA-F]{24}$/)
@@ -30,6 +35,11 @@ const validateUserLogin = (body) => {
   return error;
 };
 
+const validateOTP = (body) => {
+  const { error } = optSchema.validate(body);
+  return error;
+}
+
 const validateId = (id) => {
   const { error } = idSchema.validate(id);
   return error;
@@ -38,5 +48,6 @@ const validateId = (id) => {
 module.exports = {
   validateUser,
   validateUserLogin,
+  validateOTP,
   validateId,
 };

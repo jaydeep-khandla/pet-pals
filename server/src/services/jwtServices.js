@@ -8,8 +8,15 @@ class JwtServices {
         });
     }
 
-    verifyAccessToken(token, callback) {
-        return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, callback);
+    verifyAccessToken(token) {
+        return new Promise((resolve, reject) => {
+            jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(decoded);
+            });
+        });
     }
 
     generateRefreshToken(payload) {
@@ -18,8 +25,15 @@ class JwtServices {
         });
     }
 
-    verifyRrefreshToken(token) {
-        return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    verifyRefreshToken(token) {
+        return new Promise((resolve, reject) => {
+            jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(decoded);
+            });
+        });
     }
 }
 
