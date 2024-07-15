@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "@/components/Signup/Signup-style.css";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const Signup = ({ onToggle }) => {
   const [formData, setFormData] = useState({
@@ -24,13 +26,22 @@ const Signup = ({ onToggle }) => {
       <section>
         <form onSubmit={handleSubmit} className="form__container  ">
           <h2 className="text-2xl font-bold mb-5">Sign Up</h2>
-          <section className="mb-4">
+          <section className="mb-4 w-full">
             <div className=" mb-2">
               <label className="font-bold text-gray-700 text-sm" htmlFor="email">
                 Full Name
               </label>
-              <input
+              {/* <input
                 className="w-full px-3 py-2 border text-sm bg-stone-200 mt-1"
+                type="text"
+                name="fullName"
+                placeholder="Username"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                required
+              /> */}
+              <Input
+                className="mt-1 w-full"
                 type="text"
                 name="fullName"
                 placeholder="Username"
@@ -43,8 +54,17 @@ const Signup = ({ onToggle }) => {
               <label className="font-bold text-gray-700 text-sm" htmlFor="email">
                 Email
               </label>
-              <input
+              {/* <input
                 className="w-full px-3 py-2 border bg-stone-200 mt-1"
+                type="email"
+                name="email"
+                placeholder="eg. example@gmail.com"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+              /> */}
+              <Input
+                className="mt-1"
                 type="email"
                 name="email"
                 placeholder="eg. example@gmail.com"
@@ -57,8 +77,17 @@ const Signup = ({ onToggle }) => {
               <label className="font-bold text-gray-700 text-sm" htmlFor="email">
                 Password
               </label>
-              <input
+              {/* <input
                 className="w-full px-3 py-2 border bg-stone-200 mt-1 "
+                type="password"
+                name="password"
+                placeholder="new-password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+              /> */}
+              <Input
+                className="mt-1"
                 type="password"
                 name="password"
                 placeholder="new-password"
@@ -71,8 +100,17 @@ const Signup = ({ onToggle }) => {
               <label className="font-bold text-gray-700 text-sm " htmlFor="email">
                 ConfirmPassword
               </label>
-              <input
+              {/* <input
                 className="w-full px-3 py-2 bg-stone-200 mt-1"
+                type="password"
+                name="confirmPassword"
+                placeholder="New-password"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                required
+              /> */}
+              <Input
+                className="mt-1 w-full"
                 type="password"
                 name="confirmPassword"
                 placeholder="New-password"
@@ -83,7 +121,8 @@ const Signup = ({ onToggle }) => {
             </div>
           </section>
           <div>
-            <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</button>
+            {/* <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</button> */}
+            <Button> Sign Up</Button>
           </div>
         </form>
         <h4 className=" mt-4">

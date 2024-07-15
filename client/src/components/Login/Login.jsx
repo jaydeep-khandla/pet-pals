@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 const Login = ({ onToggle }) => {
   const [formData, setFormData] = useState({
@@ -24,7 +26,7 @@ const Login = ({ onToggle }) => {
           <label className=" block font-bold text-sm text-gray-700" htmlFor="email">
             Email
           </label>
-          <input
+          {/* <input
             className="w-full px-3 py-2 border bg-stone-200 mt-1"
             type="email"
             name="email"
@@ -32,13 +34,14 @@ const Login = ({ onToggle }) => {
             value={formData.email}
             onChange={handleInputChange}
             required
-          />
+          /> */}
+          <Input className="mt-1" type="email" name="email" placeholder="eg. example@gmail.com" value={formData.email} onChange={handleInputChange} />
         </div>
         <div>
           <label htmlFor="password" className="block text-sm font-bold text-gray-700 ">
             Password
           </label>
-          <input
+          {/* <input
             type="password"
             name="password"
             placeholder="Enter Password"
@@ -46,11 +49,20 @@ const Login = ({ onToggle }) => {
             value={formData.password}
             onChange={handleInputChange}
             required
+          /> */}
+          <Input
+            className="mt-1"
+            type="password"
+            name="password"
+            placeholder="Enter password"
+            value={formData.password}
+            onChange={handleInputChange}
           />
         </div>
-        <button type="submit" className="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-900 focus:outline-none">
+        <Button className="w-full mt-5">Log In</Button>
+        {/* <button type="submit" className="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-900 focus:outline-none">
           Log In
-        </button>
+        </button> */}
       </form>
       <p className="mt-4 text-neutral-600 ml-1">
         Don't have an account?{" "}

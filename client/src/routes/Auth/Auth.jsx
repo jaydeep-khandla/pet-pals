@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Login from "@/components/Login/Login";
 import Signup from "@/components/Signup/Signup";
-import loginImage from "@/assets/images/cat 1.jpg";
+import loginImage from "@/assets/images/cat 3.jpg";
 import signupImage from "@/assets/images/dog 1.jpg";
 import "@/routes/Auth/auth.css";
 import Header from "@/components/Header/Header";
