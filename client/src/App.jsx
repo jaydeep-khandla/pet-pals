@@ -4,6 +4,7 @@ import Home from "./routes/Home/Home";
 import Auth from "./routes/Auth/Auth";
 import Login from "./components/Login/Login";
 import Signup from "./components/Signup/Signup";
+import AdoptionForm from "./components/AdoptionForm/AdoptionForm";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/AppForm" element={<AdoptionForm />} />
       </Routes>
     </>
   );
