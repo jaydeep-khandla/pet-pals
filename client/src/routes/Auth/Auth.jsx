@@ -22,7 +22,7 @@ const Auth = () => {
         <div className="main__container md:max-w-3xl ">
           {/* Login Form */}
           <div className={`absolute inset-0 flex transition-transform duration-500 transform ${isLogin ? "translate-x-0" : "-translate-x-full"}`}>
-            <div className=" w-full md:w-1/2 image__container  h-full">
+            <div className=" w-full md:w-1/2 image__container h-full">
               <img src={loginImage} alt="Login background" className="object-cover w-full h-full hidden md:block" />
             </div>
             <div className="logsign__container">

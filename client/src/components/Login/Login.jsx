@@ -66,9 +66,9 @@ const Login = ({ onToggle }) => {
       </form>
       <p className="mt-4 text-neutral-600 ml-1">
         Don't have an account?{" "}
-        <button onClick={onToggle} className="text-blue-500 font-semibold hover:underline text-sm">
-          SIGN UP
-        </button>
+        <a onClick={onToggle} className="cursor-pointer text-blue-500 font-semibold hover:underline text-sm">
+          Sign Up
+        </a>
       </p>
     </section>
   );

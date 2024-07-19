@@ -5,10 +5,6 @@ class UserService {
     return await User.create(user);
   }
 
-  async getAllUsers() {
-    return await User.find();
-  }
-
   async getUserByField(field) {
     return await User.findOne(field);
   }

@@ -7,21 +7,37 @@ const {
 const authServices = require("../services/authServices");
 const otpServices = require("../services/otpServices");
 const jwtServices = require("../services/jwtServices");
+const { addEmailJobToQueue } = require("../config/bullmq_producer");
 
 /*
 
-* Error Codes:
+? Error Codes:
+
+* 500: Internal Server Error.
 
 ! Sign Up:
-
 * 400: User input validation failed.
 * 422: User already exists.
-* 500: Internal server error.
 
 ! Login:
-
 * 400: User input validation failed.
 * 401: Invalid credentials.
+* 201: User is not verified. Otp is sent to your registered Email.
+* 200: Login successful.
+
+! Verify OTP:
+* 400: User input validation failed.
+* 401: Invalid OTP.
+* 200: User verified successfully.
+
+! Refresh JWT Token:
+* 401: Unauthorized.
+* 403: Forbidden.
+* 200: New access token generated.
+
+! Logout:
+* 401: Unauthorized.
+* 200: Logged out successfully.
 
 */
 
@@ -44,6 +60,15 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, 12);
 
     // * Create a new user object
+    /**
+     * Represents a new user.
+     * @typedef {Object} NewUser
+     * @property {string} username - The username of the user.
+     * @property {string} email - The email address of the user.
+     * @property {string} phoneNo - The phone number of the user.
+     * @property {string} password - The hashed password of the user.
+     * @property {string} userType - The type of user.
+     */
     const newUser = {
       username: req.body.username,
       email: req.body.email,
@@ -55,9 +80,8 @@ exports.signup = async (req, res) => {
     // * Create a new user with the user object
     const createdUser = await authServices.createUser(newUser);
 
-    // * Generate OTP and send it to the user's email
-    const generatedOTP = otpServices.generateOTP(createdUser.email);
-    await otpServices.sendOTPEmail(createdUser.email, generatedOTP);
+    // * Add a job to the queue
+    addEmailJobToQueue({ email: createdUser.email });
 
     // * Return success message with status code 201
     res.status(201).json({
@@ -98,15 +122,12 @@ exports.login = async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials." });
 
     if (!savedUser.isVerified) {
-      // * Generate OTP and send it to the user's email
-      const generatedOTP = otpServices.generateOTP(savedUser.email);
-      otpServices.sendOTPEmail(savedUser.email, generatedOTP).catch((error) => {
-        console.error("Failed to send OTP: ", error);
-      });
+      // * Add a job to the queue
+      addEmailJobToQueue({ email: savedUser.email });
 
       // * Return success message with status code 201
       return res.status(201).json({
-        error: "User is not verified. Otp is sent to your registered Email.",
+        message: "User is not verified. Otp is sent to your registered Email.",
       });
     }
 
@@ -214,12 +235,11 @@ exports.refreshJWToken = async (req, res) => {
 
     // * Return the access token with status code 200
     res.status(200).json({ accessToken });
-
   } catch (error) {
     // * If an error occurs, log the error and return an error message with status code 500
     console.error("refreshJWToken error: ", error);
 
-    // * 
+    // * Return error message with status code 500
     res.status(500).json({ error: "Oops..!! Something Broke" });
   }
 };

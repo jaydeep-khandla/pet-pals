@@ -120,16 +120,14 @@ const Signup = ({ onToggle }) => {
               />
             </div>
           </section>
-          <div>
             {/* <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</button> */}
-            <Button> Sign Up</Button>
-          </div>
+          <Button>Sign Up</Button>
         </form>
         <h4 className=" mt-4">
           Already have an account?{" "}
-          <button onClick={onToggle} className="text-blue-500 font-semibold hover:underline">
+          <a onClick={onToggle} className="cursor-pointer text-blue-500 font-semibold hover:underline">
             Login
-          </button>
+          </a>
         </h4>
       </section>
     </>

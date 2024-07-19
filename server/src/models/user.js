@@ -2,19 +2,13 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
+    username: {
+      type: String,
       required: true,
-      unique: true,
-      auto: true,
     },
     userType: {
       type: String,
       enum: ["user", "animal_shelter", "animal_rescue", "admin"],
-      required: true,
-    },
-    username: {
-      type: String,
       required: true,
     },
     email: {
