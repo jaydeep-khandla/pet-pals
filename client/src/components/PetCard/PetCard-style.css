@@ -1,0 +1,33 @@
+.button-hover {
+  position: relative;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: white;
+  color: #eb8125;
+  cursor: pointer;
+  overflow: hidden;
+  transition: color 1s ease;
+}
+
+.button-hover::before {
+  content: "";
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  background-color: #eb8125; /* Hover color */
+  border-radius: 70%;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  z-index: 0;
+  transition: transform 0.7s ease;
+}
+
+.button-hover:hover::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.button-hover span {
+  position: relative;
+  z-index: 1;
+}

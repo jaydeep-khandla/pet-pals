@@ -8,7 +8,8 @@ export default function HeroSection() {
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
-    navigate("/AppForm");
+    // navigate("/AppForm");
+    navigate("/PetList");
   };
 
   return (
