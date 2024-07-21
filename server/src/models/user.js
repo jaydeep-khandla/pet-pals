@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["user", "animal_shelter", "animal_rescue", "admin"],
       required: true,
+      default: "user",
     },
     email: {
       type: String,
@@ -19,16 +20,18 @@ const userSchema = new mongoose.Schema(
     phoneNo: {
       type: String,
       required: true,
-      unique: true,
     },
     password: {
       type: String,
       required: true,
     },
-    address: {
+    city: {
       type: String,
       required: true,
-      default: "N/A",
+    },
+    country: {
+      type: String,
+      required: true,
     },
     refreshToken: {
       type: String,

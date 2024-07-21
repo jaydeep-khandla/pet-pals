@@ -11,9 +11,9 @@ const app = express(); // Create an Express application
 connectDB(); // Connect to the database
 
 app.use(express.json()); // Middleware to parse JSON request bodies
-app.use(authRoutes); // Apply the userRoutes to the /api/users path
+app.use('/api/auth', authRoutes); // Apply the userRoutes to the /api/auth path
 app.use(verifyToken); // Apply the auth middleware to all routes
-app.use(adminRoutes); // Apply the adminRoutes to the /api/admin path
+app.use('api/admin', adminRoutes); // Apply the adminRoutes to the /api/admin path
 
 const PORT = process.env.PORT || 8000;
 
