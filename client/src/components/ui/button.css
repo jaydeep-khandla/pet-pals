@@ -3,7 +3,7 @@
   padding: 10px 20px;
   font-size: 16px;
   background-color: white;
-  color: #eb8125;
+  color: #f04336;
   cursor: pointer;
   overflow: hidden;
   transition: color 1s ease;
@@ -14,7 +14,7 @@
   position: absolute;
   width: 300%;
   height: 300%;
-  background-color: #eb8125; /* Hover color */
+  background-color: #f04336; /* Hover color */
   border-radius: 70%;
   top: 100%;
   left: 50%;
