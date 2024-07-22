@@ -9,8 +9,10 @@ router.post('/login', authController.login);
 
 router.post('/verify', authController.verifyOtp);
 
-router.get('/refresh', verifyToken, authController.refreshJWToken);
+router.use(verifyToken);
 
-router.get('/logout', verifyToken, authController.logout);
+router.get('/refresh', authController.refreshJWToken);
+
+router.get('/logout', authController.logout);
 
 module.exports = router;

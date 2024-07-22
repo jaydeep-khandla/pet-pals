@@ -1,5 +1,4 @@
-const User = require('../models/user');
-const Pet = require('../models/pet');
+const { User, Pet } = require('../models');
 
 class adminServices {
   async getAllUsers() {
