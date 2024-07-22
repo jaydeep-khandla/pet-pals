@@ -104,7 +104,14 @@ const PetSearchPage = () => {
         <div className="flex flex-col md:flex-row">
           {/* Filter Sidebar for large screens */}
           <div className="hidden md:block  md:w-64 p-4 mt-10">
-            <FilterSidebar filters={filters} setFilters={handleFilterChange} />
+            <FilterSidebar
+              filters={filters}
+              setFilters={setFilters}
+              petTypes={["Dog", "Cat", "Rabbit", "Bird", "Other"]}
+              genders={["Male", "Female"]}
+              breeds={["Golden Retriever", "Labrador", "Persian", "Siamese", "Dwarf Rabbit", "Lop", "Parakeet", "Cockatiel"]}
+              sizes={["Small", "Medium", "Large", "Extra Large"]}
+            />
           </div>
 
           {/* Filter Sidebar for small screens  */}
@@ -114,7 +121,14 @@ const PetSearchPage = () => {
             }`}
             style={{ width: "250px" }}
           >
-            <FilterSidebar filters={filters} setFilters={handleFilterChange} />
+            <FilterSidebar
+              filters={filters}
+              setFilters={setFilters}
+              petTypes={["Dog", "Cat", "Rabbit", "Bird", "Other"]}
+              genders={["Male", "Female"]}
+              breeds={["Golden Retriever", "Labrador", "Persian", "Siamese", "Dwarf Rabbit", "Lop", "Parakeet", "Cockatiel"]}
+              sizes={["Small", "Medium", "Large", "Extra Large"]}
+            />
           </div>
 
           {/* Main Content Area */}
@@ -138,7 +152,7 @@ const PetSearchPage = () => {
                 ))}
               </div> */}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {currentPets.map((pet) => (
                   <div key={pet._id} className="flex justify-center">
                     <PetCard pet={pet} />
