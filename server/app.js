@@ -1,4 +1,5 @@
 require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const connectDB = require('./src/config/db');
 const routes = require('./src/routes')
@@ -7,6 +8,7 @@ const app = express(); // Create an Express application
 
 connectDB(); // Connect to the database
 
+app.use(cors()); // Enable CORS
 app.use(express.json()); // Middleware to parse JSON request bodies
 app.use('/', routes); // Apply the userRoutes to the /api/auth path
 
