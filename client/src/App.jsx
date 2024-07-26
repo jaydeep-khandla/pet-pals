@@ -7,6 +7,7 @@ import AdoptionForm from "@/components/AdoptionForm/AdoptionForm";
 import Layout from "@/components/Layout/Layout";
 import RequireAuth from "@/components/RequireAuth/RequireAuth";
 import PetSearchPage from "./routes/PetSearchPage/PetSearchPage";
+import PetProfile from "./components/PetProfile/PetProfile";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/PetList" element={<PetSearchPage />} />
+          <Route path="/pet/:petId" element={<PetProfile />} />
 
           <Route element={<RequireAuth />}>
             <Route path="/appform" element={<AdoptionForm />} />

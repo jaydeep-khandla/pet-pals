@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardFooter } from "../ui/card";
 import "@/components/ui/button.css";
 
 const PetCard = ({ pet }) => {
+  console.log("petdetails", pet);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+  const handleAdoptionClick = () => {
+    navigate(`/pet/${pet._id}`); // Assuming each pet has a unique _id field
+  };
 
   return (
     <>
@@ -60,7 +66,7 @@ const PetCard = ({ pet }) => {
           </div>
         </CardContent>
         <CardFooter className="bg-gray-50 p-4">
-          <Button className="w-full button-hover">
+          <Button className="w-full button-hover " onClick={handleAdoptionClick}>
             <span className="font-bold flex items-center justify-center">
               Adoption
               <img className="h-5 mt-1 pl-1" src="https://themebeyond.com/pre/petco-prev/petco-live/img/icon/w_pawprint.png" alt="Paw Print" />

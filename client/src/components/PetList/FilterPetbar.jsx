@@ -67,7 +67,7 @@ const FilterSidebar = ({ filters, setFilters, petTypes, genders, breeds, sizes }
         {renderSelect("pet_type_single", "Pet Type ", [...petTypes, "Other"])}
         {renderSelect("pet_breed_name", "Breed", [...breeds, "Other"])}
         {renderCheckboxGroup("pet_age", "Age", ["Young", "Adult", "Senior"])}
-        {renderCheckboxGroup("pet_sex", "Sex", genders)}
+        {renderCheckboxGroup("pet_sex", "Gender", genders)}
         {renderCheckboxGroup("pet_size", "Size", sizes)}
       </div>
     </ScrollArea>
