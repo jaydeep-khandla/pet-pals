@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { login } from "@/helperFuncs/auth";
+import { useNavigate } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
 
 const Login = ({ onToggle }) => {
+  const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -12,10 +18,24 @@ const Login = ({ onToggle }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Handle form submission logic here
+    const user = {
+      email: formData.email,
+      password: formData.password,
+    }
+    try {
+      const response = await login(user);
+      console.log('Login successful:', response);
+      setAuth(() => (response?.data?.accessToken));
+      console.log(response?.data?.accessToken);
+      console.log(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Signup failed:', error);
+    }
   };
 
   return (

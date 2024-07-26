@@ -8,20 +8,24 @@ import Layout from "@/components/Layout/Layout";
 import RequireAuth from "@/components/RequireAuth/RequireAuth";
 import PetSearchPage from "./routes/PetSearchPage/PetSearchPage";
 import PetProfile from "./components/PetProfile/PetProfile";
+import OtpRoute from "./routes/OtpRoute/OtpRoute";
+import PersistLogin from "./components/PersistLogin/PersistLogin";
 
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/PetList" element={<PetSearchPage />} />
-          <Route path="/pet/:petId" element={<PetProfile />} />
-
-          <Route element={<RequireAuth />}>
-            <Route path="/appform" element={<AdoptionForm />} />
-            <Route path="/user-profile" element={<ProfileRoute />} />
+          <Route path="/verify-otp" element={<OtpRoute />} />
+          <Route element={<PersistLogin />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/PetList" element={<PetSearchPage />} />
+            <Route element={<RequireAuth />}>
+              <Route path="/pet/:petId" element={<PetProfile />} />
+              <Route path="/user-profile" element={<ProfileRoute />} />
+              <Route path="/adoption-form" element={<AdoptionForm />} />
+            </Route>
           </Route>
         </Route>
       </Routes>

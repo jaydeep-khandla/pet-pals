@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "@/Api/axios";
 import { motion } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { HeartIcon, PawPrintIcon, MapPinIcon, CalendarIcon } from "lucide-react"
 
 export default function PetProfile() {
   const { petId } = useParams();
+  const navigate = useNavigate(); 
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

@@ -1,16 +1,15 @@
 import axios from "@/Api/axios";
 
-exports.verifyOtp = async (otp) => {
+export const verifyOtp = async (otp) => {
     try {
-        const response = await axios('/api/auth/verify', {
-            method: 'POST',
+        const response = await axios.post('/auth/verify', otp, {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(otp)
         });
-        return await response.json();
+        return response;
     } catch (err) {
         console.log(err);
+        return err;
     }
 }

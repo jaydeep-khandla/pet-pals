@@ -6,8 +6,10 @@ export default function RequireAuth() {
     const { auth } = useAuth();
     const location = useLocation();
 
+    console.log(auth);
+
     return (
-        auth?.user
+        auth
             ? <Outlet />
             : <Navigate to='/auth' state={{ from: location }} replace />
     );

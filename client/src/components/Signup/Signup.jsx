@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import "@/components/Signup/Signup-style.css";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { useNavigate } from 'react-router-dom';
 import { signup } from "@/helperFuncs/auth";
 
 const Signup = ({ onToggle }) => {
+
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -26,8 +30,13 @@ const Signup = ({ onToggle }) => {
       password: formData.password,
       userType: "user",
     }
-    const result = await signup(user);
-    console.log(result);
+    try {
+      const response = await signup(user);
+      console.log('Signup successful:', response);
+      navigate('/verify-otp', { state: { email: user.email } });
+    } catch (error) {
+      console.error('Signup failed:', error);
+    }
   };
 
   return (
@@ -129,7 +138,7 @@ const Signup = ({ onToggle }) => {
               />
             </div>
           </section>
-            {/* <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</button> */}
+          {/* <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</button> */}
           <Button>Sign Up</Button>
         </form>
         <h4 className=" mt-4">

@@ -6,6 +6,8 @@ import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuL
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, CircleUserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Avatar } from "@radix-ui/react-avatar";
+import useAuth from "@/hooks/useAuth";
 
 const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(false);
@@ -28,6 +30,7 @@ export default function Header() {
   const location = useLocation();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isOpen, setIsOpen] = useState(false);
+  const { auth } = useAuth();
 
   const handleLoginClick = () => {
     navigate("/auth");
@@ -71,9 +74,11 @@ export default function Header() {
 
       {isMobile ? (
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon" onClick={handleLoginClick} className="text-primary">
+          {auth ? <Avatar>
+            JK
+          </Avatar> : (<Button variant="ghost" size="icon" onClick={handleLoginClick} className="text-primary">
             <CircleUserRound className="h-5 w-5" />
-          </Button>
+          </Button>)}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
@@ -100,11 +105,11 @@ export default function Header() {
         </NavigationMenu>
       )}
 
-      {!isMobile && (
+      {!isMobile ? auth ? <Avatar>JK</Avatar> :(
         <Button variant="outline" className="h-10 border-2 border-black bg-transparent hover:bg-black hover:text-white" onClick={handleLoginClick}>
           Login
         </Button>
-      )}
+      ) : null}
     </header>
   );
 }

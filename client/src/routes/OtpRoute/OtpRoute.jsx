@@ -1,10 +1,16 @@
 import { useRef, useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { verifyOtp } from '@/helperFuncs/verifyotp';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import Bg from "@/assets/images/bg.jpg";
 
 export default function OtpRoute() {
+    const length = 6;
     const [otp, setOtp] = useState(new Array(length).fill(''));
     const inputRef = useRef([]);
     const [otpInput, setOtpInput] = useState('');
+    const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const email = location.state && location.state.email; //? email from previous route
@@ -18,7 +24,7 @@ export default function OtpRoute() {
         };
     }, []);
 
-    const handleOtpChange = (index, e) => {
+    const handleOtpChange = async (index, e) => {
 
         const value = e.target.value;
         if (isNaN(value)) return;
@@ -33,7 +39,15 @@ export default function OtpRoute() {
 
         if (combinedOtp.length === length) {
             setOtpInput(() => combinedOtp);
-            onOtpSubmit({email, combinedOtp}); //? API call to submit OTP, did't implement this
+            // onOtpSubmit({email, combinedOtp}); //? API call to submit OTP, did't implement this
+            try {
+                setDisabled(() => true);
+                const response = await verifyOtp({ email, otp: combinedOtp });
+                console.log('verification successful:', response);
+                navigate('/auth');
+            } catch (error) {
+                console.error('Otp failed:', error);
+            }
         }
 
         // if(!value) {
@@ -73,27 +87,33 @@ export default function OtpRoute() {
     }
 
     return (
-        <section className='w-fit m-auto'>
-            <div className='mt-5'>
-                {
-                    otp.map((value, index) => (
-                        <input
-                            className=' h-12 w-12 p-4 m-4 rounded-lg text-lg text-center'
-                            key={index}
-                            ref={(input) => (inputRef.current[index] = input)}
-                            type="text"
-                            value={value}
-                            onChange={(e) => handleOtpChange(index, e)}
-                            onClick={() => handleOtpClick(index)}
-                            onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                        />
-                    ))
-                }
-
-            </div>
-            <div className='m-4'>
-                <button className=' bg-zinc-900 py-2 w-full rounded-md hover:bg-zinc-700' onClick={onOtpSubmit({email, combinedOtp})} >Verify</button>
+        <section className='w-full h-screen flex flex-col items-center justify-center' style={{ backgroundImage: `url(${Bg})` }}>
+            <div className='h-fit w-fit p-16 flex flex-col items-center justify-center bg-white border-2 border-black rounded-md'>
+                <div className='flex flex-col items-center'>
+                    <h1 className='text-3xl font-bold'>Enter OTP</h1>
+                    <p className='text-gray-500'>OTP sent to {email}</p>
+                </div>
+                <div className='mt-5 flex'>
+                    {
+                        otp.map((value, index) => (
+                            <Input
+                                className=' h-12 w-12 p-4 m-2 rounded-lg text-lg text-black text-center border-2 border-black'
+                                key={index}
+                                ref={(input) => (inputRef.current[index] = input)}
+                                type="text"
+                                value={value}
+                                onChange={(e) => handleOtpChange(index, e)}
+                                onClick={() => handleOtpClick(index)}
+                                onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                            />
+                        ))
+                    }
+                </div>
+                <div className='m-4 w-full'>
+                    <Button className='w-full' disabled={disabled}>Verify</Button>
+                </div>
             </div>
         </section>
     );
 }
+// onClick={onOtpSubmit({email, combinedOtp})}

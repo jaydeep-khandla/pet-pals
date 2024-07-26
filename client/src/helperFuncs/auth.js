@@ -4,7 +4,6 @@ export const signup = async (user) => {
     console.log('this is user in signup', user);
     try {
         const response = await axios.post('/auth/signup', user, {
-            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -16,17 +15,16 @@ export const signup = async (user) => {
     }
 }
 
-const login = async (user) => {
+export const login = async (user) => {
     try {
-        const response = await axios('/api/auth/login', {
-            method: 'POST',
+        const response = await axios.post('/auth/login', user, {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(user)
         });
-        return await response.json();
+        return response;
     } catch (err) {
         console.log(err);
+        return err;
     }
 }
