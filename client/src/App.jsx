@@ -18,9 +18,9 @@ function App() {
           <Route path="/auth" element={<Auth />} />
           <Route path="/PetList" element={<PetSearchPage />} />
           <Route path="/pet/:petId" element={<PetProfile />} />
+          <Route path="/appform" element={<AdoptionForm />} />
 
           <Route element={<RequireAuth />}>
-            <Route path="/appform" element={<AdoptionForm />} />
             <Route path="/user-profile" element={<ProfileRoute />} />
           </Route>
         </Route>
