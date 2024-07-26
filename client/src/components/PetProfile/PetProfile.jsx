@@ -16,7 +16,7 @@ export default function PetProfile() {
     const fetchPetData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/pets/petlist/${petId}`);
+        const response = await axios.get(`/pets/${petId}`);
         console.log("Pet data:", response.data);
         setPet(response.data);
         setLoading(false);

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import "@/components/Signup/Signup-style.css";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { signup } from "@/helperFuncs/auth";
 
 const Signup = ({ onToggle }) => {
   const [formData, setFormData] = useState({
-    fullName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -15,10 +16,18 @@ const Signup = ({ onToggle }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Handle form submission logic here
+    const user = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      userType: "user",
+    }
+    const result = await signup(user);
+    console.log(result);
   };
 
   return (
@@ -43,9 +52,9 @@ const Signup = ({ onToggle }) => {
               <Input
                 className="mt-1 w-full"
                 type="text"
-                name="fullName"
+                name="username"
                 placeholder="Username"
-                value={formData.fullName}
+                value={formData.username}
                 onChange={handleInputChange}
                 required
               />

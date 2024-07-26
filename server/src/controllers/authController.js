@@ -42,6 +42,9 @@ const { addEmailJobToQueue } = require("../config/bullmq_producer");
 */
 
 exports.signup = async (req, res) => {
+
+  console.log(req.body);
+
   // * Validate user input wiht JOI
   const error = validateUser(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });

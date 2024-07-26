@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -19,7 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     phoneNo: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,
@@ -27,11 +28,11 @@ const userSchema = new mongoose.Schema(
     },
     city: {
       type: String,
-      required: true,
+      required: false,
     },
     country: {
       type: String,
-      required: true,
+      required: false,
     },
     refreshToken: {
       type: String,
@@ -39,6 +40,7 @@ const userSchema = new mongoose.Schema(
     },
     isVerified: {
       type: Boolean,
+      required: true,
       default: false, // Set default value to false
     },
     pets_ids: [

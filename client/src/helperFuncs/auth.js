@@ -1,8 +1,24 @@
 import axios from "@/Api/axios";
 
-exports.signup = async (user) => {
+export const signup = async (user) => {
+    console.log('this is user in signup', user);
     try {
-        let response = await axios('/api/auth/signup', {
+        const response = await axios.post('/auth/signup', user, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        return response;
+    } catch (err) {
+        console.log(err);
+        return err;
+    }
+}
+
+const login = async (user) => {
+    try {
+        const response = await axios('/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
