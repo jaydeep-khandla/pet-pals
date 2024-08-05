@@ -21,7 +21,7 @@ export default function HeroSection() {
             Welcome to <b>PetPals</b>, where love finds its way home. Discover a furry friend who will fill your days with joy. Start your journey to
             unconditional love today.
           </span>
-          <Button onClick={handleLoginClick}>Find Your Pet Now... {"->"}</Button>
+          <Button onClick={handleLoginClick}>Find Your Pet Now...</Button>
         </div>
         <div className="lg:w-1/2 flex justify-center items-center">
           <img src={DogHeroImg} alt="Meow.." className="h-auto lg:h-full w-full object-cover rounded-md" />

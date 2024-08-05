@@ -162,6 +162,15 @@ exports.login = async (req, res) => {
       secure: true,
     });
 
+    // if (res.cookie("jwt", refreshToken, {
+    //   httpOnly: true,
+    //   maxAge: 24 * 60 * 60 * 1000,
+    //   sameSite: "none",
+    //   secure: true,
+    // })) {
+    //   res.status(200).json({ accessToken });
+    // }
+
     // * Return the access token with status code 200
     res.status(200).json({ accessToken });
   } catch (error) {
