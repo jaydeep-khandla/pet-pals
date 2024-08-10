@@ -20,19 +20,27 @@ const userSchema = new mongoose.Schema(
     },
     phoneNo: {
       type: String,
-      required: false,
+      default: null,
     },
     password: {
       type: String,
       required: true,
     },
+    profilePicUrl: {
+      type: String,
+      default: null,
+    },
     city: {
       type: String,
-      required: false,
+      default: null,
+    },
+    state: {
+      type: String,
+      default: null,
     },
     country: {
       type: String,
-      required: false,
+      default: null,
     },
     refreshToken: {
       type: String,
@@ -42,6 +50,18 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
       default: false, // Set default value to false
+    },
+    website_url: {
+      type: String,
+      default: null,
+    },
+    address: {
+      type: String,
+      default: null,
+    },
+    address_url: {
+      type: String,
+      default: null,
     },
     pets_ids: [
       {

@@ -20,8 +20,8 @@ export default function PersistLogin() {
             try {
                 await refresh()
             } catch (err) {
-                console.log(err);
-                toast.error(err)
+                console.error(err?.response?.data?.error);
+                // toast.error(err.response.data?.error);
             }
             finally {
                 setIsLoading(false)

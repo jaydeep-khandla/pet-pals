@@ -1,13 +1,16 @@
+import Logo from "@/assets/images/logo.svg";
 import React, { useState, useEffect } from "react";
-import Logo from "../../assets/images/logo.svg";
-import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, CircleUserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Avatar } from "@radix-ui/react-avatar";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import ProfileCard from "@/components/ProfileCard/ProfileCard";
 import useAuth from "@/hooks/useAuth";
+import useToggle from "@/hooks/useToggle";
+import decodeJWT from "@/helperFuncs/decodeJWT";
 
 const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(false);
@@ -31,11 +34,17 @@ export default function Header() {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isOpen, setIsOpen] = useState(false);
   const { auth } = useAuth();
+  const { toggleClicked, handleToggleClick } = useToggle();
 
   const handleLoginClick = () => {
     navigate("/auth");
     if (isMobile) setIsOpen(false);
   };
+
+  // useEffect(() => {
+  //   console.log('toggleClicked: ', toggleClicked['profile']);
+    
+  // }, [toggleClicked['profile']]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -68,15 +77,23 @@ export default function Header() {
     </>
   );
 
+  useEffect(() => {
+    const token = auth?.accessToken;
+    if (token) {
+      const user = decodeJWT(token);
+    }
+  }, [auth]);
+
   return (
     <header className="fixed flex items-center justify-between w-full h-16 px-5 z-30 bg-white border-b-2 border-black/20">
       <img src={Logo} className="h-10" alt="Logo" />
 
       {isMobile ? (
         <div className="flex items-center space-x-2">
-          {auth ? <Avatar>
-            JK
-          </Avatar> : (<Button variant="ghost" size="icon" onClick={handleLoginClick} className="text-primary">
+          {auth ? <div onClick={() => handleToggleClick('profile')}><Avatar className=" cursor-pointer border-2 border-black" >
+            <AvatarImage src="/placeholder-user.jpg" />
+            <AvatarFallback>JD</AvatarFallback>
+          </Avatar></div> : (<Button variant="ghost" size="icon" onClick={handleLoginClick} className="text-primary">
             <CircleUserRound className="h-5 w-5" />
           </Button>)}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -105,11 +122,17 @@ export default function Header() {
         </NavigationMenu>
       )}
 
-      {!isMobile ? auth ? <Avatar>JK</Avatar> :(
+      {!isMobile ? auth ? <div onClick={handleToggleClick('profile')}><Avatar className=" cursor-pointer border-2 border-black" onClick={handleToggleClick('profile')} >
+        <AvatarImage src="/placeholder-user.jpg" />
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar></div> : (
         <Button variant="outline" className="h-10 border-2 border-black bg-transparent hover:bg-black hover:text-white" onClick={handleLoginClick}>
           Login
         </Button>
       ) : null}
+      {
+        auth && toggleClicked['profile'] ? <ProfileCard /> : null
+      }
     </header>
   );
 }

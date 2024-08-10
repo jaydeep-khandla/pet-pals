@@ -9,7 +9,7 @@ const corsOptions = {
         }
     },
     optionsSuccessStatus: 200,
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }
 
 module.exports = corsOptions;

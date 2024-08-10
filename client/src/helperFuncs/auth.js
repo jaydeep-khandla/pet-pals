@@ -10,8 +10,8 @@ export const signup = async (user) => {
         });
         return response;
     } catch (err) {
-        console.log(err);
-        return err;
+        console.error(err);
+        return { error: "Oops..!! Something Broke" };
     }
 }
 
@@ -21,10 +21,11 @@ export const login = async (user) => {
             headers: {
                 'Content-Type': 'application/json'
             },
+            withCredentials: true
         });
         return response;
     } catch (err) {
-        console.log(err);
-        return err;
+        console.error(err);
+        return { error: "Oops..!! Something Broke" };
     }
 }

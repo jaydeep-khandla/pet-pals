@@ -19,27 +19,29 @@ To read more about using these font, please visit the Next.js documentation:
 **/
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+import { Separator } from "@/components/ui/separator";
 
-export default function UserProfile() {
+
+export default function UserProfile({ user }) {
+  
   return (
     (<div className="max-w-3xl mx-auto p-6 sm:p-8 bg-[#FFF5C3] border-2 border-black mt-20 mb-14 rounded-lg">
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
         <div className="flex-shrink-0 ">
           <Avatar className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-black">
-            <AvatarImage src="/placeholder-user.jpg" />
+            <AvatarImage src={user?.profilePicUrl ? user?.profilePicUrl : "/placeholder-user.jpg"} />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
         </div>
         <div className="flex-1 grid gap-2 self-center">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold">John Doe</h1>
-            <Badge variant="secondary">Verified</Badge>
+            <h1 className="text-2xl font-bold">{user?.username}</h1>
+            {user?.isVerified ? <Badge variant="secondary">Verified</Badge> : null}
           </div>
           <div className="text-muted-foreground">
-            <span>jdoe@example.com</span>
+            <span>{user?.email}</span>
             <span className="mx-2">·</span>
-            <span>San Francisco, CA</span>
+            <span>{user?.city || user?.state ? <>{user?.city}{", "}{user?.state}</> : null}</span>
           </div>
           {/* <div className="grid sm:flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -71,28 +73,28 @@ export default function UserProfile() {
           <div className="grid gap-2">
             <div className="flex items-center gap-2">
               <PhoneIcon className="w-5 h-5 text-muted-foreground" />
-              <span>+1 (555) 123-4567</span>
+              <span>{user?.phoneNo}</span>
             </div>
             <div className="flex items-center gap-2">
               <MailIcon className="w-5 h-5 text-muted-foreground" />
-              <span>jdoe@example.com</span>
+              <span>{user?.email}</span>
             </div>
           </div>
         </div>
         <div className="grid gap-2">
-            <h2 className="text-2xl font-bold">Adoption Preferences</h2>
-            <div className="grid gap-4">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <PawPrintIcon className="h-5 w-5" />
-                <span>Prefers dogs and cats</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <PawPrintIcon className="h-5 w-5" />
-                <span>Open to all ages and sizes</span>
-              </div>
+          <h2 className="text-2xl font-bold">Adoption Preferences</h2>
+          <div className="grid gap-4">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <PawPrintIcon className="h-5 w-5" />
+              <span>Prefers dogs and cats</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <PawPrintIcon className="h-5 w-5" />
+              <span>Open to all ages and sizes</span>
             </div>
           </div>
-        <div>
+        </div>
+        {user?.pets_ids ? <div>
           <h2 className="text-lg font-semibold">Adoption History</h2>
           <div className="grid gap-4">
             <div className="flex items-center gap-4">
@@ -128,7 +130,7 @@ export default function UserProfile() {
               </div>
             </div>
           </div>
-        </div>
+        </div> : null}
       </div>
     </div>)
   );

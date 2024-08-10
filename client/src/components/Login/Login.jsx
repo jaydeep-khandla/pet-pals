@@ -29,9 +29,9 @@ const Login = ({ onToggle }) => {
     try {
       const response = await login(user);
       console.log('Login successful:', response);
-      setAuth(() => (response?.data?.accessToken));
+      setAuth(() => ({accessToken: response?.data?.accessToken}));
       console.log(response?.data?.accessToken);
-      console.log(auth);
+      console.log('auth: ', auth);
       navigate('/');
     } catch (error) {
       console.error('Signup failed:', error);

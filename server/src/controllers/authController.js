@@ -4,7 +4,7 @@ const {
   validateUserLogin,
   validateOTP,
 } = require("../validation/validation");
-const authServices = require("../services/authServices");
+const userServices = require("../services/userServices");
 const otpServices = require("../services/otpServices");
 const jwtServices = require("../services/jwtServices");
 const { addEmailJobToQueue } = require("../config/bullmq_producer");
@@ -43,15 +43,13 @@ const { addEmailJobToQueue } = require("../config/bullmq_producer");
 
 exports.signup = async (req, res) => {
 
-  console.log(req.body);
-
   // * Validate user input wiht JOI
   const error = validateUser(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
 
   try {
     // * Check if user already exists
-    const existingUser = await authServices.getUserByField({
+    const existingUser = await userServices.getUserByField({
       email: req.body.email,
     });
 
@@ -59,8 +57,11 @@ exports.signup = async (req, res) => {
     if (existingUser)
       return res.status(422).json({ error: "User already exists." });
 
+    // * Generate a salt
+    const salt = await bcrypt.genSalt(12);
+
     // * Hash the password
-    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
     // * Create a new user object
     /**
@@ -81,7 +82,7 @@ exports.signup = async (req, res) => {
     };
 
     // * Create a new user with the user object
-    const createdUser = await authServices.createUser(newUser);
+    const createdUser = await userServices.createUser(newUser);
 
     // * Add a job to the queue
     addEmailJobToQueue({ email: createdUser.email });
@@ -106,7 +107,7 @@ exports.login = async (req, res) => {
 
   try {
     // * Check if user exists
-    const savedUser = await authServices.getUserByField({
+    const savedUser = await userServices.getUserByField({
       email: req.body.email,
     });
 
@@ -140,9 +141,6 @@ exports.login = async (req, res) => {
       userType: savedUser.userType,
       username: savedUser.username,
       email: savedUser.email,
-      phoneNo: savedUser.phoneNo,
-      address: savedUser.address,
-      pets_ids: savedUser.pets_ids,
     };
 
     // * Generate access token and refresh token
@@ -152,7 +150,7 @@ exports.login = async (req, res) => {
     // * Update the user's refresh token
     const filter = { email: req.body.email };
     const update = { refreshToken };
-    await authServices.updateUserByField(filter, update);
+    await userServices.updateUserByField(filter, update);
 
     // * Return the refresh token as cookies
     res.cookie("jwt", refreshToken, {
@@ -161,15 +159,6 @@ exports.login = async (req, res) => {
       sameSite: "none",
       secure: true,
     });
-
-    // if (res.cookie("jwt", refreshToken, {
-    //   httpOnly: true,
-    //   maxAge: 24 * 60 * 60 * 1000,
-    //   sameSite: "none",
-    //   secure: true,
-    // })) {
-    //   res.status(200).json({ accessToken });
-    // }
 
     // * Return the access token with status code 200
     res.status(200).json({ accessToken });
@@ -199,7 +188,7 @@ exports.verifyOtp = async (req, res) => {
     const update = { isVerified: true };
 
     // * Save the updated user
-    await authServices.updateUserByField(filter, update);
+    await userServices.updateUserByField(filter, update);
 
     // * Return success message with status code 200
     res.status(200).json({ message: "User verified successfully." });
@@ -220,7 +209,7 @@ exports.refreshJWToken = async (req, res) => {
 
   try {
     // * Find the user by refresh token
-    const savedUser = await authServices.getUserByField({ refreshToken });
+    const savedUser = await userServices.getUserByField({ refreshToken });
 
     // * If no user is found with the refresh token, return error message with status code 401
     if (!savedUser) return res.status(401).json({ error: "Unauthorized" });
@@ -229,7 +218,7 @@ exports.refreshJWToken = async (req, res) => {
     const decoded = await jwtServices.verifyRefreshToken(refreshToken);
 
     // * If the token is invalid or user mismatch, return 403 Forbidden
-    if (savedUser._id.toString() !== decoded._id) return res.sendStatus(403);
+    if (savedUser._id.toString() !== decoded.id) return res.sendStatus(403);
 
     // * Create a payload object with user details
     const payload = {
@@ -237,9 +226,6 @@ exports.refreshJWToken = async (req, res) => {
       userType: savedUser.userType,
       username: savedUser.username,
       email: savedUser.email,
-      phoneNo: savedUser.phoneNo,
-      address: savedUser.address,
-      pets_ids: savedUser.pets_ids,
     };
 
     // * Generate a new access token
@@ -270,7 +256,7 @@ exports.logout = async (req, res) => {
     const update = { refreshToken: "" };
 
     // Use findOneAndUpdate to update the user in one operation
-    const updatedUser = await authServices.updateUserByField(filter, update);
+    const updatedUser = await userServices.updateUserByField(filter, update);
 
     if (!updatedUser) {
       // If no user is found with the refresh token, return error message with status code 401

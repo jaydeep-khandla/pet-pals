@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Home from "@/routes/Home/Home";
 import Auth from "@/routes/Auth/Auth";
@@ -14,6 +15,7 @@ import PersistLogin from "./components/PersistLogin/PersistLogin";
 function App() {
   return (
     <>
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/auth" element={<Auth />} />
@@ -23,7 +25,7 @@ function App() {
             <Route path="/PetList" element={<PetSearchPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/pet/:petId" element={<PetProfile />} />
-              <Route path="/user-profile" element={<ProfileRoute />} />
+              <Route path="/user/:id" element={<ProfileRoute />} />
               <Route path="/adoption-form" element={<AdoptionForm />} />
             </Route>
           </Route>

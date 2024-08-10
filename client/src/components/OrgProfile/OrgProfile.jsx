@@ -33,7 +33,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
-export function OrgProfile() {
+export default function OrgProfile() {
   return (
     (<div className="bg-background text-foreground">
       <header className="bg-primary text-primary-foreground py-6 px-4 md:px-6">
