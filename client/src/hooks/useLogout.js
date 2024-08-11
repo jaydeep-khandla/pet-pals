@@ -9,7 +9,7 @@ const useLogout = () => {
         setAuth(() => null);
         setLoggingOut(() => true);
         try {
-            await axios.get('/logout', {
+            await axios.get('auth/logout', {
                 withCredentials: true
             });
             toast.success("You have been Logged Out");
