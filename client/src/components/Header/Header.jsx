@@ -7,9 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-// import ProfileCard from "@/components/ProfileCard/ProfileCard";
+import ProfileCard from "@/components/ProfileCard/ProfileCard";
 import useAuth from "@/hooks/useAuth";
-import useToggle from "@/hooks/useToggle";
 import decodeJWT from "@/helperFuncs/decodeJWT";
 
 const useMediaQuery = (query) => {
@@ -17,13 +16,11 @@ const useMediaQuery = (query) => {
 
   useEffect(() => {
     const media = window.matchMedia(query);
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
-    const listener = () => setMatches(media.matches);
-    media.addListener(listener);
-    return () => media.removeListener(listener);
-  }, [matches, query]);
+    const handleChange = () => setMatches(media.matches);
+    handleChange();
+    media.addEventListener("change", handleChange);
+    return () => media.removeEventListener("change", handleChange);
+  }, [query]);
 
   return matches;
 };
@@ -33,18 +30,25 @@ export default function Header() {
   const location = useLocation();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [isOpen, setIsOpen] = useState(false);
+  const [showProfile, setShowProfile] = useState(false); // State for profile card visibility
   const { auth } = useAuth();
-  // const { toggleClicked, handleToggleClick } = useToggle();
+  const [user, setUser] = useState(null);
 
   const handleLoginClick = () => {
     navigate("/auth");
     if (isMobile) setIsOpen(false);
   };
 
-  // useEffect(() => {
-  //   console.log('toggleClicked: ', toggleClicked['profile']);
-    
-  // }, [toggleClicked['profile']]);
+  const handleAvatarClick = () => {
+    setShowProfile(!showProfile); // Toggle profile card visibility
+  };
+
+  useEffect(() => {
+    if (auth?.accessToken) {
+      const user = decodeJWT(auth.accessToken);
+      setUser(user);
+    }
+  }, [auth]);
 
   const isActive = (path) => location.pathname === path;
 
@@ -77,25 +81,25 @@ export default function Header() {
     </>
   );
 
-  useEffect(() => {
-    const token = auth?.accessToken;
-    if (token) {
-      const user = decodeJWT(token);
-    }
-  }, [auth]);
-
   return (
     <header className="fixed flex items-center justify-between w-full h-16 px-5 z-30 bg-white border-b-2 border-black/20">
       <img src={Logo} className="h-10" alt="Logo" />
 
       {isMobile ? (
         <div className="flex items-center space-x-2">
-          {auth ? <Avatar className=" cursor-pointer border-2 border-black" >
-            <AvatarImage src="/placeholder-user.jpg" />
-            <AvatarFallback>JD</AvatarFallback>
-          </Avatar> : (<Button variant="ghost" size="icon" onClick={handleLoginClick} className="text-primary">
-            <CircleUserRound className="h-5 w-5" />
-          </Button>)}
+          {auth ? (
+            <>
+              <Avatar className="cursor-pointer border-2 border-black" onClick={handleAvatarClick}>
+                <AvatarImage src="/placeholder-user.jpg" />
+                <AvatarFallback>JD</AvatarFallback>
+              </Avatar>
+              {showProfile && user && <ProfileCard />}
+            </>
+          ) : (
+            <Button variant="ghost" size="icon" onClick={handleLoginClick} className="text-primary">
+              <CircleUserRound className="h-5 w-5" />
+            </Button>
+          )}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon">
@@ -122,17 +126,21 @@ export default function Header() {
         </NavigationMenu>
       )}
 
-      {!isMobile ? auth ? <Avatar className=" cursor-pointer border-2 border-black" >
-        <AvatarImage src="/placeholder-user.jpg" />
-        <AvatarFallback>JD</AvatarFallback>
-      </Avatar> : (
-        <Button variant="outline" className="h-10 border-2 border-black bg-transparent hover:bg-black hover:text-white" onClick={handleLoginClick}>
-          Login
-        </Button>
+      {!isMobile ? (
+        auth ? (
+          <>
+            <Avatar className="cursor-pointer border-2 border-black" onClick={handleAvatarClick}>
+              <AvatarImage src="/placeholder-user.jpg" />
+              <AvatarFallback>JD</AvatarFallback>
+            </Avatar>
+            {showProfile && user && <ProfileCard />}
+          </>
+        ) : (
+          <Button variant="outline" className="h-10 border-2 border-black bg-transparent hover:bg-black hover:text-white" onClick={handleLoginClick}>
+            Login
+          </Button>
+        )
       ) : null}
-      {/* {
-        auth && toggleClicked['profile'] ? <ProfileCard /> : null
-      } */}
     </header>
   );
 }
