@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import "@/components/Signup/Signup-style.css";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 import { useNavigate } from 'react-router-dom';
+import { toast } from "react-toastify";
 import { signup } from "@/helperFuncs/auth";
 
 const Signup = ({ onToggle }) => {
@@ -10,19 +18,88 @@ const Signup = ({ onToggle }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    userType: "user",
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSelectChange = (value) => {
+    setFormData(prevFormData => ({ ...prevFormData, userType: value }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Username validation
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email address is invalid";
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    // Confirm Password validation
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    return newErrors;
+  };
+
+  const handleSignUpResponse = (response) => {
+    switch (response?.status) {
+      case 201:
+        console.log('Account created successfully. Otp is sent to your registered Email.');
+        toast.info(response.data.message);
+        navigate('/verify-otp', { state: { email: response.data.email } });
+        break;
+      case 401:
+        console.error('Invalid credentials:', response.data.error);
+        toast.error(response.data.error);
+        break;
+      case 422:
+        console.error('Validation error:', response.data.error);
+        toast.error(response.data.error);
+        break;
+      case 500:
+        console.error('Oops..!! Something Broke');
+        toast.error(response.data.error);
+        break;
+      default:
+        console.error('Login failed:', response.data?.error || 'Unknown error');
+        toast.error(response.data?.error || 'Unknown error');
+        break;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors); // Set validation errors if any
+      return;
+    }
+
     // Handle form submission logic here
     const user = {
       username: formData.username,
@@ -32,8 +109,7 @@ const Signup = ({ onToggle }) => {
     }
     try {
       const response = await signup(user);
-      console.log('Signup successful:', response);
-      navigate('/verify-otp', { state: { email: user.email } });
+      handleSignUpResponse(response);
     } catch (error) {
       console.error('Signup failed:', error);
     }
@@ -42,22 +118,23 @@ const Signup = ({ onToggle }) => {
   return (
     <>
       <section>
-        <form onSubmit={handleSubmit} className="form__container  ">
+        <form onSubmit={handleSubmit} className="form__container">
           <h2 className="text-2xl font-bold mb-5">Sign Up</h2>
           <section className="mb-4 w-full">
-            <div className=" mb-2">
-              <label className="font-bold text-gray-700 text-sm" htmlFor="email">
-                Full Name
-              </label>
-              {/* <input
-                className="w-full px-3 py-2 border text-sm bg-stone-200 mt-1"
-                type="text"
-                name="fullName"
-                placeholder="Username"
-                value={formData.fullName}
-                onChange={handleInputChange}
-                required
-              /> */}
+            <div className="mb-2">
+              <label className="block font-bold text-sm mb-1 text-gray-700" htmlFor="userType">Login as</label>
+              <Select onValueChange={handleSelectChange} value={formData.userType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select user type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">Adopter</SelectItem>
+                  <SelectItem value="animal_shelter">Shelter</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="mb-2">
+              <label className="font-bold text-gray-700 text-sm" htmlFor="username">Username</label>
               <Input
                 className="mt-1 w-full"
                 type="text"
@@ -65,83 +142,53 @@ const Signup = ({ onToggle }) => {
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleInputChange}
-                required
+                // required
               />
+              {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
             </div>
             <div className="mb-2">
-              <label className="font-bold text-gray-700 text-sm" htmlFor="email">
-                Email
-              </label>
-              {/* <input
-                className="w-full px-3 py-2 border bg-stone-200 mt-1"
+              <label className="font-bold text-gray-700 text-sm" htmlFor="email">Email</label>
+              <Input
+                className="mt-1 w-full"
                 type="email"
                 name="email"
                 placeholder="eg. example@gmail.com"
                 value={formData.email}
                 onChange={handleInputChange}
-                required
-              /> */}
-              <Input
-                className="mt-1"
-                type="email"
-                name="email"
-                placeholder="eg. example@gmail.com"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
+                // required
               />
+              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
             <div className="mb-2">
-              <label className="font-bold text-gray-700 text-sm" htmlFor="email">
-                Password
-              </label>
-              {/* <input
-                className="w-full px-3 py-2 border bg-stone-200 mt-1 "
-                type="password"
-                name="password"
-                placeholder="new-password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-              /> */}
+              <label className="font-bold text-gray-700 text-sm" htmlFor="password">Password</label>
               <Input
-                className="mt-1"
+                className="mt-1 w-full"
                 type="password"
                 name="password"
-                placeholder="new-password"
+                placeholder="New Password"
                 value={formData.password}
                 onChange={handleInputChange}
-                required
+                // required
               />
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
             <div className="mb-2">
-              <label className="font-bold text-gray-700 text-sm " htmlFor="email">
-                ConfirmPassword
-              </label>
-              {/* <input
-                className="w-full px-3 py-2 bg-stone-200 mt-1"
-                type="password"
-                name="confirmPassword"
-                placeholder="New-password"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                required
-              /> */}
+              <label className="font-bold text-gray-700 text-sm" htmlFor="confirmPassword">Confirm Password</label>
               <Input
                 className="mt-1 w-full"
                 type="password"
                 name="confirmPassword"
-                placeholder="New-password"
+                placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                required
+                // required
               />
+              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
             </div>
           </section>
-          {/* <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-900">Sign Up</button> */}
-          <Button>Sign Up</Button>
+          <Button className="w-full">Sign Up</Button>
         </form>
-        <h4 className=" mt-4">
+        <h4 className="mt-4">
           Already have an account?{" "}
           <a onClick={onToggle} className="cursor-pointer text-blue-500 font-semibold hover:underline">
             Login

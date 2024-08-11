@@ -33,9 +33,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
-export default function OrgProfile() {
+export default function OrgProfile({ user }) {
   return (
-    (<div className="bg-background text-foreground">
+    (<div className="bg-background text-foreground mt-20">
       <header className="bg-primary text-primary-foreground py-6 px-4 md:px-6">
         <div className="container mx-auto flex items-center justify-between">
           <div>

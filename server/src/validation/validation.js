@@ -15,6 +15,7 @@ const userSchema = Joi.object({
 });
 
 const userLoginSchema = Joi.object({
+  userType: Joi.string().valid("user", "animal_shelter").required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });

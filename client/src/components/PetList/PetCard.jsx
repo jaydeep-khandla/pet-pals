@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import "@/components/ui/button.css";
 
 const PetCard = ({ pet }) => {
-  console.log("petdetails", pet);
+  // console.log("petdetails", pet);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
   const handleAdoptionClick = () => {

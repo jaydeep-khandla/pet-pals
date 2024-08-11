@@ -89,7 +89,8 @@ exports.signup = async (req, res) => {
 
     // * Return success message with status code 201
     res.status(201).json({
-      message: "Account created successfully. Otp is sent to Your E-mail.",
+      email: createdUser.email,
+      message: "Account created successfully. Otp is sent to your registered Email.",
     });
   } catch (error) {
     // * If an error occurs, log the error and return an error message with status code 500
@@ -108,6 +109,7 @@ exports.login = async (req, res) => {
   try {
     // * Check if user exists
     const savedUser = await userServices.getUserByField({
+      userType: req.body.userType,
       email: req.body.email,
     });
 
@@ -131,6 +133,7 @@ exports.login = async (req, res) => {
 
       // * Return success message with status code 201
       return res.status(201).json({
+        email: savedUser.email,
         message: "User is not verified. Otp is sent to your registered Email.",
       });
     }
