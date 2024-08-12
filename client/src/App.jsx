@@ -3,14 +3,15 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Home from "@/routes/Home/Home";
 import Auth from "@/routes/Auth/Auth";
+import Admin from "@/routes/Admin/Admin";
+import PetSearchPage from "@/routes/PetSearchPage/PetSearchPage";
 import ProfileRoute from "@/routes/ProfileRoute/ProfileRoute";
+import OtpRoute from "@/routes/OtpRoute/OtpRoute";
 import AdoptionForm from "@/components/AdoptionForm/AdoptionForm";
 import Layout from "@/components/Layout/Layout";
 import RequireAuth from "@/components/RequireAuth/RequireAuth";
-import PetSearchPage from "./routes/PetSearchPage/PetSearchPage";
-import PetProfile from "./components/PetProfile/PetProfile";
-import OtpRoute from "./routes/OtpRoute/OtpRoute";
-import PersistLogin from "./components/PersistLogin/PersistLogin";
+import PetProfile from "@/components/PetProfile/PetProfile";
+import PersistLogin from "@/components/PersistLogin/PersistLogin";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify-otp" element={<OtpRoute />} />
+          <Route path="/admin/*" element={<Admin />} />
           <Route element={<PersistLogin />}>
             <Route path="/" element={<Home />} />
             <Route path="/PetList" element={<PetSearchPage />} />

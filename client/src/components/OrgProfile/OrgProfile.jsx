@@ -42,9 +42,9 @@ export default function OrgProfile({ user }) {
             <h1 className="text-2xl font-bold">Paws & Claws Pet Shelter</h1>
             <p className="text-sm">Helping pets find their forever homes</p>
           </div>
-          <Button variant="secondary" className="hidden md:inline-flex">
+          {/* <Button variant="secondary" className="hidden md:inline-flex">
             Add Pet
-          </Button>
+          </Button> */}
         </div>
       </header>
       <main className="container mx-auto py-12 px-4 md:px-6">
@@ -152,7 +152,7 @@ export default function OrgProfile({ user }) {
       </main>
       <Dialog>
         <DialogTrigger asChild>
-          <Button className="fixed bottom-6 right-6 md:hidden">Add Pet</Button>
+          <Button className="fixed bottom-6 right-6">Add Pet</Button>
         </DialogTrigger>
         <DialogContent className="bg-card text-card-foreground p-6 rounded-lg max-w-2xl">
           <DialogHeader>
