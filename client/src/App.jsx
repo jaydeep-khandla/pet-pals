@@ -10,8 +10,11 @@ import OtpRoute from "@/routes/OtpRoute/OtpRoute";
 import AdoptionForm from "@/components/AdoptionForm/AdoptionForm";
 import Layout from "@/components/Layout/Layout";
 import RequireAuth from "@/components/RequireAuth/RequireAuth";
-import PetProfile from "@/components/PetProfile/PetProfile";
-import PersistLogin from "@/components/PersistLogin/PersistLogin";
+import PetSearchPage from "./routes/PetSearchPage/PetSearchPage";
+import PetProfile from "./components/PetProfile/PetProfile";
+import OtpRoute from "./routes/OtpRoute/OtpRoute";
+import PersistLogin from "./components/PersistLogin/PersistLogin";
+import ContactPage from "./components/ContactPage/ContactPage";
 
 function App() {
   return (
@@ -25,6 +28,7 @@ function App() {
           <Route element={<PersistLogin />}>
             <Route path="/" element={<Home />} />
             <Route path="/PetList" element={<PetSearchPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/pet/:petId" element={<PetProfile />} />
               <Route path="/user/:id" element={<ProfileRoute />} />
