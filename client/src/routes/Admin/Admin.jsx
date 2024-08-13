@@ -6,11 +6,11 @@ import Users from '@/components/AdminUserList/AdminUserList'; // Adjust the path
 import Pets from '@/components/AdminPetsList/AdminPetsList'; // Adjust the path as needed
 import AdoptionApplication from '@/components/AdminAdoptList/AdminAdoptList'; // Adjust the path as needed
 
-function App() {
+function Admin() {
     return (
-        <div className="flex">
+        <div className="flex w-full h-screen">
             <Sidebar />
-            <main className="flex-1">
+            <main className="flex-1 max-w-full overflow-auto">
                 <Routes>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/users" element={<Users />} />
@@ -24,4 +24,4 @@ function App() {
     );
 }
 
-export default App;
+export default Admin;

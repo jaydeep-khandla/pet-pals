@@ -12,7 +12,7 @@ export default function Sidebar() {
 
   return (
     <div className="flex min-h-screen">
-      <aside className={`bg-black border-r w-64 p-6 ${isCollapsed ? "w-20" : ""} transition-all`}>
+      <aside className={`bg-black border-r p-6 ${isCollapsed ? "w-16" : "w-64"} transition-all`}>
         <button
           className="flex items-center justify-between gap-2 text-muted hover:text-muted-foreground transition-colors mb-4"
           onClick={() => setIsCollapsed(!isCollapsed)}
