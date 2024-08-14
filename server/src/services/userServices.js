@@ -16,7 +16,7 @@ class UserService {
   }
 
   async updateUserByField(filter, update) {
-    return await User.findOneAndUpdate(filter, update);
+    return await User.findOneAndUpdate(filter, update, { new: true });
   }
 
   async deleteUser(id) {

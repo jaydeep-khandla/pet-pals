@@ -1,4 +1,5 @@
 const petServices = require("../services/petServices");
+const { validateId } = require("../validation/validation");
 
 exports.getPets = async (_req, res) => {
     try {
@@ -33,6 +34,9 @@ exports.getPet = async (req, res) => {
     if (!req.params.id) {
         return res.status(400).json({ error: "Pet id is required" });
     }
+
+    const error = validateId(req.params.id);
+    if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
         const pet = await petServices.getPetByField({ _id: req.params.id });
