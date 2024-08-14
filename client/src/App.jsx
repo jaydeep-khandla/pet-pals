@@ -10,9 +10,7 @@ import OtpRoute from "@/routes/OtpRoute/OtpRoute";
 import AdoptionForm from "@/components/AdoptionForm/AdoptionForm";
 import Layout from "@/components/Layout/Layout";
 import RequireAuth from "@/components/RequireAuth/RequireAuth";
-import PetSearchPage from "./routes/PetSearchPage/PetSearchPage";
 import PetProfile from "./components/PetProfile/PetProfile";
-import OtpRoute from "./routes/OtpRoute/OtpRoute";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
 import ContactPage from "./components/ContactPage/ContactPage";
 

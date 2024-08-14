@@ -2,7 +2,6 @@ import { Outlet } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import useRefreshToken from '@/hooks/useRefreshToken';
 import useAuth from '@/hooks/useAuth';
-import Spinner from '@/assets/images/Spinner.gif';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -39,11 +38,9 @@ export default function PersistLogin() {
 
     return (
         <>
-            {isLoading ? <img
-                src={Spinner}
-                className=' w-10 self-center mx-auto block text-white'
-                alt="Loading..."
-            /> : <Outlet />}
+            {isLoading ? <div className="flex justify-center items-center min-h-screen  ">
+                <img src="/src/assets/images/preloader.gif" alt="My Image" className="w-40 h-32" />
+            </div> : <Outlet />}
         </>
     );
 }
