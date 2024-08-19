@@ -48,3 +48,34 @@ exports.fetchUser = async (req, res) => {
     res.status(500).json({ error: "Oops..!! Something Broke" });
   }
 };
+
+exports.fetchOrganizations = async (req, res) => {
+
+  const userType = req.query.userType;
+
+  if (!userType) {
+    return res.status(400).json({ error: "User type is required" });
+  }
+
+  try {
+    const projection = {
+      _id: 1,
+      username: 1,
+      userType: 1,
+    };
+
+    const shelters = await userServices.getUsersByField(
+      { userType },
+      projection
+    );
+
+    if (!shelters) {
+      return res.status(404).json({ error: "Shelters not found" });
+    }
+
+    res.status(200).json({ shelters });
+  } catch (error) {
+    console.error("fetchShelters error: ", error);
+    res.status(500).json({ error: "Oops..!! Something Broke" });
+  }
+};

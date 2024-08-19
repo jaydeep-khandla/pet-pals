@@ -11,6 +11,12 @@ class UserService {
     return await User.findOne(field).select(projection);
   }
 
+  async getUsersByField(field, projection = null) {
+    if (projection === null) return await User.find(field);
+    
+    return await User.find(field).select(projection);
+  }
+
   async getUserById(id) {
     return await User.findById(id);
   }
