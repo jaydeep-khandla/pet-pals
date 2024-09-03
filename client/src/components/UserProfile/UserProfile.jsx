@@ -23,7 +23,7 @@ import { Separator } from "@/components/ui/separator";
 
 
 export default function UserProfile({ user }) {
-  
+
   return (
     (<div className="max-w-3xl mx-auto p-6 sm:p-8 bg-[#FFF5C3] border-2 border-black mt-20 mb-14 rounded-lg">
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
@@ -73,7 +73,7 @@ export default function UserProfile({ user }) {
           <div className="grid gap-2">
             <div className="flex items-center gap-2">
               <PhoneIcon className="w-5 h-5 text-muted-foreground" />
-              <span>{user?.phoneNo}</span>
+              <span>{user?.phoneNo || "Not Available"}</span>
             </div>
             <div className="flex items-center gap-2">
               <MailIcon className="w-5 h-5 text-muted-foreground" />

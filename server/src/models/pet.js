@@ -1,4 +1,3 @@
-const { required } = require('joi');
 const mongoose = require('mongoose');
 
 const petSchema = new mongoose.Schema({
@@ -36,4 +35,4 @@ const petSchema = new mongoose.Schema({
   pet_home_environment_attributes_good_with_cats: { type: Boolean, default: null, required: false },
 });
 
-module.exports = mongoose.model('Pet', petSchema);
+module.exports = mongoose.models.Pet || mongoose.model('Pet', petSchema);

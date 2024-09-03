@@ -19,6 +19,7 @@ const PetCard = ({ pet }) => {
         className="w-72 h-[435px] overflow-hidden shadow-lg hover:shadow-2xl bg-white cursor-pointer flex flex-col"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={handleAdoptionClick}
       >
         <CardContent className="p-0 flex-grow flex flex-col">
           <div className="relative w-full h-48 overflow-hidden">

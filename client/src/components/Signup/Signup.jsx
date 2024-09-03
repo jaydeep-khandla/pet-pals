@@ -142,7 +142,7 @@ const Signup = ({ onToggle }) => {
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleInputChange}
-                // required
+              // required
               />
               {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
             </div>
@@ -155,7 +155,7 @@ const Signup = ({ onToggle }) => {
                 placeholder="eg. example@gmail.com"
                 value={formData.email}
                 onChange={handleInputChange}
-                // required
+              // required
               />
               {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
@@ -168,7 +168,7 @@ const Signup = ({ onToggle }) => {
                 placeholder="New Password"
                 value={formData.password}
                 onChange={handleInputChange}
-                // required
+              // required
               />
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
@@ -181,7 +181,7 @@ const Signup = ({ onToggle }) => {
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                // required
+              // required
               />
               {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
             </div>

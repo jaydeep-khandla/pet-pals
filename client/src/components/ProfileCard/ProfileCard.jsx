@@ -1,7 +1,6 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import useUserInfo from "@/hooks/useUserInfo";
+// import useUserInfo from "@/hooks/useUserInfo";
 import useAuth from "@/hooks/useAuth";
 import useLogout from "@/hooks/useLogout";
 import useToggle from "@/hooks/useToggle";
@@ -9,8 +8,8 @@ import { Button } from "../ui/button";
 
 export default function ProfileCard() {
   const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
-  const user = useUserInfo(auth);
+  const { user, setAuth } = useAuth();
+  // const user = useUserInfo(auth);
   const logout = useLogout();
   const { handleToggleClick } = useToggle();
 

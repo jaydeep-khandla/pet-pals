@@ -1,4 +1,3 @@
-import React from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -73,7 +72,7 @@ export default function ContactPage() {
                     <Input placeholder="Your Subject" className="bg-gray-50" />
                     <Input placeholder="Your Phone Number" type="tel" className="bg-gray-50" />
                     <Textarea placeholder="Your Message" rows={6} className="bg-gray-50" />
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Send a Message</Button>
+                    <Button className="w-full">Send a Message</Button>
                   </form>
                 </CardContent>
               </Card>

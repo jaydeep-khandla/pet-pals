@@ -1,4 +1,3 @@
-const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
@@ -66,7 +65,7 @@ const userSchema = new mongoose.Schema(
     pets_ids: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "pets",
+        ref: "Pet",
       },
     ],
   },

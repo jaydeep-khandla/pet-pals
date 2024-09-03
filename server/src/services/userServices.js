@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Pet } = require('../models');
 
 class UserService {
   async createUser(user) {
@@ -6,9 +6,9 @@ class UserService {
   }
 
   async getUserByField(field, projection = null) {
-    if (projection === null) return await User.findOne(field);
+    if (projection === null) return await User.findOne(field).populate('pets_ids').exec();
     
-    return await User.findOne(field).select(projection);
+    return await User.findOne(field).select(projection).populate('pets_ids').exec();
   }
 
   async getUsersByField(field, projection = null) {

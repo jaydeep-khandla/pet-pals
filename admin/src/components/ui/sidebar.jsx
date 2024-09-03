@@ -11,59 +11,57 @@ export default function Sidebar() {
   const isActive = (path) => location.pathname.startsWith(path);
 
   return (
-    <div className="flex min-h-screen">
-      <aside className={`bg-black border-r p-6 ${isCollapsed ? "w-16" : "w-64"} transition-all`}>
-        <button
-          className="flex items-center justify-between gap-2 text-muted hover:text-muted-foreground transition-colors mb-4"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-        >
-          <div className="flex items-center gap-2">
-            <ChevronLeftIcon className={`w-5 h-5 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
-            <span className={`${isCollapsed ? "hidden" : ""}`}>Collapse</span>
-          </div>
-        </button>
-        {!isCollapsed && (
-          <>
-            <h1 className="text-muted text-3xl mb-4 font-bold">Admin Panel</h1>
-            <Separator className="mb-4" />
-          </>
-        )}
-        <div className="flex flex-col gap-6">
-          <Link to="/admin/dashboard">
-            <div
-              className={`flex items-center gap-2 transition-colors ${isActive("/admin/dashboard") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
-            >
-              <HomeIcon className="w-5 h-5" />
-              <span className={`${isCollapsed ? "hidden" : ""}`}>Dashboard</span>
-            </div>
-          </Link>
-          <Link to="/admin/users">
-            <div
-              className={`flex items-center gap-2 transition-colors ${isActive("/admin/users") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
-            >
-              <UsersIcon className="w-5 h-5" />
-              <span className={`${isCollapsed ? "hidden" : ""}`}>Users</span>
-            </div>
-          </Link>
-          <Link to="/admin/pets">
-            <div
-              className={`flex items-center gap-2 transition-colors ${isActive("/admin/pets") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
-            >
-              <DogIcon className="w-5 h-5" />
-              <span className={`${isCollapsed ? "hidden" : ""}`}>Pets</span>
-            </div>
-          </Link>
-          <Link to="/admin/adoption-application">
-            <div
-              className={`flex items-center gap-2 transition-colors ${isActive("/admin/adoption-application") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
-            >
-              <FileTextIcon className="w-5 h-5" />
-              <span className={`${isCollapsed ? "hidden" : ""}`}>Adoption Application</span>
-            </div>
-          </Link>
+    <aside className={`bg-black border-r p-6 ${isCollapsed ? "w-16 px-0 flex flex-col items-center" : "w-64"} transition-all duration-300`}>
+      <button
+        className="flex items-center justify-between gap-2 text-muted hover:text-muted-foreground mb-4"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        <div className="flex items-center gap-2">
+          <ChevronLeftIcon className={`w-5 h-5 transition-transform ${isCollapsed ? "rotate-180" : ""}`} />
+          <span className={`${isCollapsed ? "hidden" : ""}`}>Collapse</span>
         </div>
-      </aside>
-    </div>
+      </button>
+      {!isCollapsed && (
+        <>
+          <h1 className="text-muted text-3xl mb-4 font-bold">Admin Panel</h1>
+          <Separator className="mb-4" />
+        </>
+      )}
+      <div className="flex flex-col gap-6">
+        <Link to="/admin/dashboard">
+          <div
+            className={`flex items-center gap-2 transition-colors ${isActive("/admin/dashboard") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
+          >
+            <HomeIcon className="w-5 h-5" />
+            <span className={`${isCollapsed ? "hidden" : ""}`}>Dashboard</span>
+          </div>
+        </Link>
+        <Link to="/admin/users">
+          <div
+            className={`flex items-center gap-2 transition-colors ${isActive("/admin/users") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
+          >
+            <UsersIcon className="w-5 h-5" />
+            <span className={`${isCollapsed ? "hidden" : ""}`}>Users</span>
+          </div>
+        </Link>
+        <Link to="/admin/pets">
+          <div
+            className={`flex items-center gap-2 transition-colors ${isActive("/admin/pets") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
+          >
+            <DogIcon className="w-5 h-5" />
+            <span className={`${isCollapsed ? "hidden" : ""}`}>Pets</span>
+          </div>
+        </Link>
+        <Link to="/admin/adoption-application">
+          <div
+            className={`flex items-center gap-2 transition-colors ${isActive("/admin/adoption-application") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
+          >
+            <FileTextIcon className="w-5 h-5" />
+            <span className={`${isCollapsed ? "hidden" : ""}`}>Adoption Application</span>
+          </div>
+        </Link>
+      </div>
+    </aside>
   );
 }
 

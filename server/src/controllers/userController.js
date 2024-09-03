@@ -36,10 +36,10 @@ exports.fetchUser = async (req, res) => {
         isVerified: user.isVerified,
     }
 
-    const userToken = jwtServices.generateAccessToken(payload);
+    // const userToken = jwtServices.generateAccessToken(payload);
 
     // * Return user data with status code 200
-    res.status(200).json({ userToken });
+    res.status(200).json(payload);
   } catch (error) {
     // * Log error message
     console.error("fetchUser error: ", error);
