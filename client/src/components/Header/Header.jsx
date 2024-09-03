@@ -11,6 +11,7 @@ import ProfileCard from "@/components/ProfileCard/ProfileCard";
 import useAuth from "@/hooks/useAuth";
 import decodeJWT from "@/helperFuncs/decodeJWT";
 
+
 const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(false);
 
@@ -42,6 +43,7 @@ export default function Header() {
   const handleAvatarClick = () => {
     setShowProfile(!showProfile); // Toggle profile card visibility
   };
+  
 
   useEffect(() => {
     if (auth?.accessToken) {
