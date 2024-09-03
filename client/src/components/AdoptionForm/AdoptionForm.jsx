@@ -1,15 +1,14 @@
-import { Input } from "../ui/input";
 import React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useForm } from "react-hook-form";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import Bg from "@/assets/images/bg.jpg";
 
 const formSchema = z.object({
@@ -30,12 +29,14 @@ const formSchema = z.object({
   landlordContact: z.string().optional(),
   numAdults: z.number().min(1),
   numChildren: z.number().min(0),
-  Yard: z.string().optional(),
+  yard: z.string().optional(),
   currentPets: z.string().optional(),
   previousPets: z.string().optional(),
+  petExperience: z.string().optional(),
   workSchedule: z.string().min(1, { message: "Please describe your work schedule." }),
   aloneTime: z.number().min(0).max(24),
   adoptionReason: z.string().min(1, { message: "Please provide a reason for adoption." }),
+
   financialCommitment: z.string().min(1, { message: "Please describe your financial commitment." }),
   agreeTerms: z.boolean().refine((val) => val === true, { message: "You must agree to the terms." }),
 });
@@ -51,34 +52,37 @@ const AdoptionForm = () => {
       state: "",
       zipCode: "",
       phoneNumber: "",
-      petType: "",
-      preferredBreed: "",
       ageRange: "adult",
       residenceType: "",
-      ownRent: "",
+      ownRent: "own",
+      landlordContact: "",
       numAdults: 1,
       numChildren: 0,
+      yard: "",
       currentPets: "",
       previousPets: "",
+      petExperience: "",
       workSchedule: "",
       aloneTime: 0,
-      exercisePlan: "",
       adoptionReason: "",
-      futurePlans: "",
+
+      financialCommitment: "",
       agreeTerms: false,
-      consentVisit: false,
-      consentContact: false,
     },
   });
 
   function onSubmit(values) {
-    console.log(values);
+    console.log("Form submitted with values:", values);
     // Here you would typically send the form data to your backend
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="container mx-auto p-4 space-y-6" style={{ backgroundImage: `url(${Bg})` }}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit, (errors) => console.log("Form errors:", errors))}
+        className="container mx-auto p-4 space-y-6"
+        style={{ backgroundImage: `url(${Bg})` }}
+      >
         <h1 className="text-3xl font-bold text-center mb-6">Pet Adoption Application</h1>
 
         <Card>
@@ -99,7 +103,7 @@ const AdoptionForm = () => {
                       <FormControl>
                         <Input placeholder="Enter your full name" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -112,7 +116,7 @@ const AdoptionForm = () => {
                       <FormControl>
                         <Input type="email" placeholder="Enter your email" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -126,7 +130,7 @@ const AdoptionForm = () => {
                     <FormControl>
                       <Input placeholder="Street Address" {...field} />
                     </FormControl>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -136,11 +140,11 @@ const AdoptionForm = () => {
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="pl-1">City</FormLabel>
+                      <FormLabel>City</FormLabel>
                       <FormControl>
                         <Input placeholder="City" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -149,11 +153,11 @@ const AdoptionForm = () => {
                   name="state"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="pl-1">State</FormLabel>
+                      <FormLabel>State</FormLabel>
                       <FormControl>
                         <Input placeholder="State" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -162,11 +166,11 @@ const AdoptionForm = () => {
                   name="zipCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="pl-1">Zip</FormLabel>
+                      <FormLabel>Zip</FormLabel>
                       <FormControl>
                         <Input placeholder="ZIP Code" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -175,11 +179,11 @@ const AdoptionForm = () => {
                   name="phoneNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="pl-1">Phone Noumber</FormLabel>
+                      <FormLabel>Phone Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="+91" {...field} />
+                        <Input placeholder="10 digit number" {...field} />
                       </FormControl>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -187,6 +191,7 @@ const AdoptionForm = () => {
             </div>
             <hr className="border-dashed border-stone-800" />
 
+            {/* Household Information */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Household Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -209,7 +214,7 @@ const AdoptionForm = () => {
                           <SelectItem value="other">Other</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -230,7 +235,7 @@ const AdoptionForm = () => {
                           <SelectItem value="rent">Rent</SelectItem>
                         </SelectContent>
                       </Select>
-                      <FormMessage className="text-red-500" />
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -244,8 +249,9 @@ const AdoptionForm = () => {
                     <FormItem>
                       <FormLabel>Number of adults in household</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} min={1} />
+                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value, 10))} min={1} />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -256,22 +262,23 @@ const AdoptionForm = () => {
                     <FormItem>
                       <FormLabel>Number of children in household</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} min={0} />
+                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value, 10))} min={0} />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
               <FormField
                 control={form.control}
-                name="Yard"
+                name="yard"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Do You have Yard (if applicable)</FormLabel>
+                    <FormLabel>Do you have a yard? (if applicable)</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select yard" />
+                          <SelectValue placeholder="Select option" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -279,7 +286,7 @@ const AdoptionForm = () => {
                         <SelectItem value="No">No</SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -298,7 +305,7 @@ const AdoptionForm = () => {
                     <FormControl>
                       <Textarea {...field} placeholder="Describe your current pets" />
                     </FormControl>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -311,6 +318,7 @@ const AdoptionForm = () => {
                     <FormControl>
                       <Textarea {...field} placeholder="Describe your previous pets and what happened to them" />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -323,6 +331,7 @@ const AdoptionForm = () => {
                     <FormControl>
                       <Textarea {...field} placeholder="Describe your experience with pet care, training, or special needs" />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -341,6 +350,7 @@ const AdoptionForm = () => {
                     <FormControl>
                       <Input {...field} placeholder="Describe your typical daily schedule" />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -351,8 +361,9 @@ const AdoptionForm = () => {
                   <FormItem>
                     <FormLabel>Hours pet will be alone per day</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} min={0} max={24} />
+                      <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value, 10))} min={0} max={24} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -371,18 +382,7 @@ const AdoptionForm = () => {
                     <FormControl>
                       <Textarea {...field} placeholder="Explain why you want to adopt a pet at this time" />
                     </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="specificPet"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Are you interested in a specific pet? If so, which one?</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Name or ID of specific pet, if applicable" />
-                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -396,6 +396,28 @@ const AdoptionForm = () => {
                     <FormControl>
                       <Textarea {...field} placeholder="Describe your understanding of the financial responsibilities of pet ownership" />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <hr className="border-dashed border-stone-800" />
+
+            {/* Agreement */}
+            <div>
+              <FormField
+                control={form.control}
+                name="agreeTerms"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                    <FormControl>
+                      <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>I agree to the terms and conditions</FormLabel>
+                      <FormDescription>You must agree to the terms to submit the form.</FormDescription>
+                    </div>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
