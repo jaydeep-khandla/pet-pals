@@ -3,7 +3,6 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import Home from "@/routes/Home/Home";
 import Auth from "@/routes/Auth/Auth";
-import Admin from "@/routes/Admin/Admin";
 import PetSearchPage from "@/routes/PetSearchPage/PetSearchPage";
 import ProfileRoute from "@/routes/ProfileRoute/ProfileRoute";
 import OtpRoute from "@/routes/OtpRoute/OtpRoute";
@@ -24,7 +23,6 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify-otp" element={<OtpRoute />} />
-          <Route path="/admin/*" element={<Admin />} />
           <Route element={<PersistLogin />}>
             <Route path="/services" element={<ServicesPage />} />
 

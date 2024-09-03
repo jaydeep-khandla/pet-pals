@@ -1,14 +1,13 @@
-import { Input } from "../ui/input";
-import React from "react";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useForm } from "react-hook-form";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Textarea } from "../ui/textarea";
-import { Checkbox } from "../ui/checkbox";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import { useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Dialog, DialogContent, DialogTitle, DialogClose, DialogDescription, DialogHeader, DialogFooter } from "@/components/ui/dialog";
 import * as z from "zod";
 import Bg from "@/assets/images/bg.jpg";
 
@@ -18,12 +17,8 @@ const formSchema = z.object({
   address: z.string().min(5, { message: "Address must be at least 5 characters." }),
   city: z.string().min(2, { message: "City must be at least 2 characters." }),
   state: z.string().min(2, { message: "State must be at least 2 characters." }),
-  zipCode: z.string().regex(/^\d{5}(-\d{4})?$/, {
-    message: "Invalid ZIP code. Use 5 digits or 5+4 format.",
-  }),
-  phoneNumber: z.string().regex(/^\d{10}$/, {
-    message: "Invalid phone number. Please enter 10 digits.",
-  }),
+  zipCode: z.string().regex(/^\d{5}(-\d{4})?$/, { message: "Invalid ZIP code. Use 5 digits or 5+4 format." }),
+  phoneNumber: z.string().regex(/^\d{10}$/, { message: "Invalid phone number. Please enter 10 digits." }),
   ageRange: z.enum(["puppy", "adult", "senior"]),
   residenceType: z.string().min(1, { message: "Please select a residence type." }),
   ownRent: z.enum(["own", "rent"]),
@@ -34,14 +29,13 @@ const formSchema = z.object({
   currentPets: z.string().optional(),
   previousPets: z.string().optional(),
   workSchedule: z.string().min(1, { message: "Please describe your work schedule." }),
-  aloneTime: z.number().min(0).max(24),
   adoptionReason: z.string().min(1, { message: "Please provide a reason for adoption." }),
   financialCommitment: z.string().min(1, { message: "Please describe your financial commitment." }),
   agreeTerms: z.boolean().refine((val) => val === true, { message: "You must agree to the terms." }),
 });
 
 const AdoptionForm = () => {
-  const form = useForm({
+  const methods = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
@@ -51,8 +45,6 @@ const AdoptionForm = () => {
       state: "",
       zipCode: "",
       phoneNumber: "",
-      petType: "",
-      preferredBreed: "",
       ageRange: "adult",
       residenceType: "",
       ownRent: "",
@@ -61,24 +53,28 @@ const AdoptionForm = () => {
       currentPets: "",
       previousPets: "",
       workSchedule: "",
-      aloneTime: 0,
-      exercisePlan: "",
       adoptionReason: "",
-      futurePlans: "",
+      financialCommitment: "",
       agreeTerms: false,
-      consentVisit: false,
-      consentContact: false,
     },
   });
 
-  function onSubmit(values) {
-    console.log(values);
-    // Here you would typically send the form data to your backend
-  }
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const onSubmit = (values) => {
+    console.log("Submitted values:", values);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => setOpenDialog(false);
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="container mx-auto p-4 space-y-6" style={{ backgroundImage: `url(${Bg})` }}>
+    <FormProvider {...methods}>
+      <form
+        onSubmit={methods.handleSubmit(onSubmit)}
+        className="container mx-auto p-4 space-y-6"
+        style={{ backgroundImage: `url(${Bg})` }}
+      >
         <h1 className="text-3xl font-bold text-center mb-6">Pet Adoption Application</h1>
 
         <Card>
@@ -91,7 +87,6 @@ const AdoptionForm = () => {
               <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
-                  control={form.control}
                   name="fullName"
                   render={({ field }) => (
                     <FormItem>
@@ -104,7 +99,6 @@ const AdoptionForm = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
                   name="email"
                   render={({ field }) => (
                     <FormItem>
@@ -118,7 +112,6 @@ const AdoptionForm = () => {
                 />
               </div>
               <FormField
-                control={form.control}
                 name="address"
                 render={({ field }) => (
                   <FormItem>
@@ -132,7 +125,6 @@ const AdoptionForm = () => {
               />
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                 <FormField
-                  control={form.control}
                   name="city"
                   render={({ field }) => (
                     <FormItem>
@@ -145,7 +137,6 @@ const AdoptionForm = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
                   name="state"
                   render={({ field }) => (
                     <FormItem>
@@ -158,7 +149,6 @@ const AdoptionForm = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
                   name="zipCode"
                   render={({ field }) => (
                     <FormItem>
@@ -171,11 +161,10 @@ const AdoptionForm = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
                   name="phoneNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="pl-1">Phone Noumber</FormLabel>
+                      <FormLabel className="pl-1">Phone Number</FormLabel>
                       <FormControl>
                         <Input placeholder="+91" {...field} />
                       </FormControl>
@@ -191,12 +180,11 @@ const AdoptionForm = () => {
               <h2 className="text-xl font-semibold mb-4">Household Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
-                  control={form.control}
                   name="residenceType"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Residence Type</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select residence type" />
@@ -214,12 +202,11 @@ const AdoptionForm = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
                   name="ownRent"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Do you own or rent?</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select value={field.value} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select option" />
@@ -238,7 +225,6 @@ const AdoptionForm = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <FormField
-                  control={form.control}
                   name="numAdults"
                   render={({ field }) => (
                     <FormItem>
@@ -250,7 +236,6 @@ const AdoptionForm = () => {
                   )}
                 />
                 <FormField
-                  control={form.control}
                   name="numChildren"
                   render={({ field }) => (
                     <FormItem>
@@ -262,154 +247,103 @@ const AdoptionForm = () => {
                   )}
                 />
               </div>
-              <FormField
-                control={form.control}
-                name="Yard"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Do You have Yard (if applicable)</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select yard" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes</SelectItem>
-                        <SelectItem value="No">No</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
-                )}
-              />
             </div>
+
             <hr className="border-dashed border-stone-800" />
 
-            {/* Pet Experience */}
             <div>
-              <h2 className="text-xl font-semibold mb-4">Pet Experience</h2>
+              <h2 className="text-xl font-semibold mb-4">Pet History and Care</h2>
               <FormField
-                control={form.control}
                 name="currentPets"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Current Pets (species, breed, age)</FormLabel>
+                    <FormLabel>Current Pets</FormLabel>
                     <FormControl>
-                      <Textarea {...field} placeholder="Describe your current pets" />
+                      <Textarea placeholder="List any current pets" {...field} />
                     </FormControl>
-                    <FormMessage className="text-red-500" />
                   </FormItem>
                 )}
               />
               <FormField
-                control={form.control}
                 name="previousPets"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Previous Pets (last 5 years)</FormLabel>
+                    <FormLabel>Previous Pets</FormLabel>
                     <FormControl>
-                      <Textarea {...field} placeholder="Describe your previous pets and what happened to them" />
+                      <Textarea placeholder="List any previous pets" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
               />
               <FormField
-                control={form.control}
-                name="petExperience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Experience with pet care</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} placeholder="Describe your experience with pet care, training, or special needs" />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <hr className="border-dashed border-stone-800" />
-
-            {/* Lifestyle and Commitment */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Lifestyle and Commitment</h2>
-              <FormField
-                control={form.control}
                 name="workSchedule"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Typical work/school schedule</FormLabel>
+                    <FormLabel>Work Schedule</FormLabel>
                     <FormControl>
-                      <Input {...field} placeholder="Describe your typical daily schedule" />
+                      <Textarea placeholder="Describe your work schedule" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
               />
               <FormField
-                control={form.control}
-                name="aloneTime"
+                name="adoptionReason"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hours pet will be alone per day</FormLabel>
+                    <FormLabel>Reason for Adoption</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} min={0} max={24} />
+                      <Textarea placeholder="Why are you adopting?" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="financialCommitment"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Financial Commitment</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Describe your financial commitment" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
               />
             </div>
-            <hr className="border-dashed border-stone-800" />
 
-            {/* Adoption Intentions */}
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Adoption Intentions</h2>
-              <FormField
-                control={form.control}
-                name="adoptionReason"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Reason for wanting to adopt a pet</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} placeholder="Explain why you want to adopt a pet at this time" />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="specificPet"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Are you interested in a specific pet? If so, which one?</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="Name or ID of specific pet, if applicable" />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            <FormField
+              name="agreeTerms"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input type="checkbox" {...field} />
+                  </FormControl>
+                  <FormLabel className="ml-2">I agree to the terms and conditions</FormLabel>
+                  <FormMessage className="text-red-500" />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="financialCommitment"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Financial commitment</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} placeholder="Describe your understanding of the financial responsibilities of pet ownership" />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+            <div className="flex justify-center">
+              <Button type="submit">Submit Application</Button>
             </div>
           </CardContent>
         </Card>
 
-        <div className="flex justify-center">
-          <Button type="submit" size="lg">
-            Submit Application
-          </Button>
-        </div>
+        <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Thank you for your application!</DialogTitle>
+              <DialogDescription>Your application has been submitted successfully.</DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button onClick={handleCloseDialog}>Close</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </form>
-    </Form>
+    </FormProvider>
   );
 };
 
