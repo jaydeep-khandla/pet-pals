@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "@/Api/axios";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import Bg from "@/assets/images/bg.jpg";
+import useAuth from "@/hooks/useAuth";
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -42,6 +44,8 @@ const formSchema = z.object({
 });
 
 const AdoptionForm = () => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,6 +74,32 @@ const AdoptionForm = () => {
       agreeTerms: false,
     },
   });
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        setLoading(true);
+        // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+        const response = await axios.get("user/:id");
+        const userData = response.data;
+
+        // Autofill form with fetched data
+        Object.keys(userData).forEach((key) => {
+          if (form.getValues(key) !== undefined) {
+            form.setValue(key, userData[key]);
+          }
+        });
+
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch user information. Please fill the form manually.");
+        console.error("Error fetching user info:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [form]);
 
   function onSubmit(values) {
     console.log("Form submitted with values:", values);
