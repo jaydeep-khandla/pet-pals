@@ -1,6 +1,6 @@
 import axios from "@/Api/axios";
 
-export const fetchProfile = async (userId) => {
+export const fetchUser = async (userId) => {
     try {
         const response = await axios.get(`/user/${userId}`, {
             headers: {
@@ -11,7 +11,7 @@ export const fetchProfile = async (userId) => {
 
         return response;
     } catch (error) {
-        console.error("fetchProfile error: ", error);
+        console.error("fetchUser error: ", error);
         return error.response;
     }
 };

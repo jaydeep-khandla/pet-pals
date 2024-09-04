@@ -17,8 +17,16 @@ class UserService {
     return await User.find(field).select(projection);
   }
 
-  async getUserById(id) {
-    return await User.findById(id);
+  async getUsersByIds(ids, projection = null) {
+    if (!Array.isArray(ids) || ids.length === 0) {
+      throw new Error('Invalid IDs array');
+    }
+
+    if (projection === null) {
+      return await User.find({ _id: { $in: ids } });
+    }
+
+    return await User.find({ _id: { $in: ids } }).select(projection);
   }
 
   async updateUserByField(filter, update) {

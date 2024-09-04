@@ -9,7 +9,7 @@ export default function OtpRoute() {
     const length = 6;
     const [otp, setOtp] = useState(new Array(length).fill(''));
     const inputRef = useRef([]);
-    const [otpInput, setOtpInput] = useState('');
+    // const [otpInput, setOtpInput] = useState('');
     const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
@@ -38,7 +38,7 @@ export default function OtpRoute() {
         const combinedOtp = newOtp.join('');
 
         if (combinedOtp.length === length) {
-            setOtpInput(() => combinedOtp);
+            // setOtpInput(() => combinedOtp);
             // onOtpSubmit({email, combinedOtp}); //? API call to submit OTP, did't implement this
             try {
                 setDisabled(() => true);
@@ -61,7 +61,7 @@ export default function OtpRoute() {
             }
             else {
                 inputRef.current[index + 1]?.focus()
-            };
+            }
             // console.log(newOtp[index + 1]);
         }
 

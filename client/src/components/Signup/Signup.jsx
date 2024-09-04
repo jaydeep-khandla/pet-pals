@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "@/components/Signup/Signup-style.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -7,7 +7,7 @@ import Footer from '@/components/Footer/Footer';
 import UserProfile from '@/components/UserProfile/UserProfile';
 import OrgProfile from '@/components/OrgProfile/OrgProfile';
 import useAuth from '@/hooks/useAuth';
-import { fetchProfile } from "@/helperFuncs/profileFetch";
+import { fetchUser } from "@/helperFuncs/userFetch";
 
 const profileComponents = {
   user: UserProfile,
@@ -27,7 +27,7 @@ export default function ProfileRoute() {
 
     const init = async () => {
 
-      const response = await fetchProfile(id);
+      const response = await fetchUser(id);
 
       if (response?.status === 404) {
         toast.error("User not found");

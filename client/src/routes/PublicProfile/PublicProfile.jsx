@@ -6,7 +6,7 @@ import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
 import PublicOrgProfile from '@/components/PublicOrgProfile/PublicOrgProfile';
 import UserProfile from '@/components/UserProfile/UserProfile';
-import { fetchProfile } from "@/helperFuncs/profileFetch";
+import { fetchUser } from "@/helperFuncs/userFetch";
 // import useUserInfo from '@/hooks/useUserInfo';
 
 // const profileComponents = {
@@ -27,7 +27,7 @@ export default function PublicProfile() {
 
         async function init() {
 
-            const response = await fetchProfile(id);
+            const response = await fetchUser(id);
 
             if (response?.status === 404) {
                 toast.error("User not found");

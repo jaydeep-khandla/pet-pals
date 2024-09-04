@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "@/Api/axios";
 import { motion } from "framer-motion";
@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { HeartIcon, PawPrintIcon, CalendarIcon, RulerIcon, Syringe, User } from "lucide-react";
 
 export default function PetProfile() {
-  const { petId } = useParams(); 
-  const navigate = useNavigate(); 
+  const { petId } = useParams();
+  const navigate = useNavigate();
   const [pet, setPet] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,7 +17,7 @@ export default function PetProfile() {
   // const navigate = useNavigate();
 
   const handleonClick = () => {
-    navigate("/adoption-form"); // Assuming each pet has a unique _id field
+    navigate("/adoption-form", { state: { petId, orgId: pet?.pet_organization_id } }); // Assuming each pet has a unique _id field
   };
 
   useEffect(() => {
@@ -26,6 +26,8 @@ export default function PetProfile() {
         setLoading(true);
         const response = await axios.get(`/pets/${petId}`);
         setPet(response.data);
+        console.log(response.data);
+
         // Simulating fetching recommendations
         setRecommendations([
           { id: 1, name: "Max", breed: "Golden Retriever", age: 2 },

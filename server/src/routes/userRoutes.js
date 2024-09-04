@@ -7,4 +7,6 @@ router.get('/:id', userController.fetchUser);
 
 router.get('/shelters', userController.fetchOrganizations);
 
+router.post('/multiple', userController.fetchUsersByIds);
+
 module.exports = router;
