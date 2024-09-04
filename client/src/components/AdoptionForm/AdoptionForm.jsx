@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-// import axios from "@/Api/axios";
-import { fetchAllData } from "@/helperFuncs/adoptionData";
+import axios from "@/Api/axios";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,9 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Dialog, DialogDescription, DialogTitle, DialogHeader, DialogContent, DialogClose, DialogFooter } from "../ui/dialog";
 import Bg from "@/assets/images/bg.jpg";
 import useAuth from "@/hooks/useAuth";
+import { fetchAllData } from "@/helperFuncs/adoptionData";
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -41,6 +40,7 @@ const formSchema = z.object({
   workSchedule: z.string().min(1, { message: "Please describe your work schedule." }),
   aloneTime: z.number().min(0).max(24),
   adoptionReason: z.string().min(1, { message: "Please provide a reason for adoption." }),
+
   financialCommitment: z.string().min(1, { message: "Please describe your financial commitment." }),
   agreeTerms: z.boolean().refine((val) => val === true, { message: "You must agree to the terms." }),
 });
@@ -49,17 +49,15 @@ const AdoptionForm = () => {
   const [data, setData] = useState({
     petData: null,
     adopterData: null,
-    organizationData: null
+    organizationData: null,
   });
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
 
-  const { user } = useAuth();
   const [openDialog, setOpenDialog] = useState(false);
-
+  const { user } = useAuth();
   const location = useLocation();
-  const { petId, orgId } = location?.state ?? {};
-
+  const { petId, orgId } = location.state || {};
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -87,67 +85,109 @@ const AdoptionForm = () => {
       agreeTerms: false,
     },
   });
-  // useEffect(() => {
-
-  //   if (!user || !user?.id) return;
-
-  //   const init = async () => {
-  //     try {
-  //       const response = await fetchUser(user?.id);
-  //       setUserData(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-
-  //     }
-  //   }
-
-  //   init();
-
-  // }, [user]);
-
   useEffect(() => {
     if (!user || !user.id) return;
 
-    const userIds = [user.id, orgId]; // Fetch data for the current user; modify if needed to fetch multiple users
-
     const fetchData = async () => {
-      try {
-        // setLoading(true);
-        const result = await fetchAllData(petId, userIds);
-        setData(result);
-        console.log(result);
-
-      } catch (err) {
-        // setError(err);
-        console.log(err);
-
-      } finally {
-        // setLoading(false);
-        console.log(1);
-
-      }
+      const userIds = [user.id, orgId];
+      const result = await fetchAllData(petId, userIds);
+      setData(result);
     };
 
     fetchData();
   }, [user, orgId, petId]);
 
   useEffect(() => {
-    if (data.adopterData) {
-      Object.keys(data.adopterData).forEach((key) => {
-        if (form.getValues(key) !== undefined) {
-          form.setValue(key, data.adopterData[key]);
-        }
-      });
-    }
-  }, [data.adopterData, form]);
+    const fetchUserInfo = async () => {
+      try {
+        setLoading(true);
+        // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+        const response = await axios.get("user/:id");
+        const userData = response.data;
+
+        // Autofill form with fetched data
+        Object.keys(userData).forEach((key) => {
+          if (form.getValues(key) !== undefined) {
+            form.setValue(key, userData[key]);
+          }
+        });
+
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch user information. Please fill the form manually.");
+        console.error("Error fetching user info:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, [form]);
 
   function onSubmit(values) {
     console.log("Form submitted with values:", values);
-    // Here you would typically send the form data to your backend
     setOpenDialog(true);
   }
 
-  const handleCloseDialog = () => setOpenDialog(false);
+  const renderPetCard = () => {
+    return (
+      data.petData && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Pet Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h3 className="text-lg font-semibold">{data.petData.pet_name}</h3>
+            <p>
+              <strong>Type:</strong> {data.petData.pet_type}
+            </p>
+            <p>
+              <strong>Breed:</strong> {data.petData.pet_breeds}
+            </p>
+            <p>
+              <strong>Age:</strong> {data.petData.pet_age}
+            </p>
+            <p>
+              <strong>Sex:</strong> {data.petData.pet_sex}
+            </p>
+            <p>
+              <strong>Size:</strong> {data.petData.pet_size}
+            </p>
+          </CardContent>
+        </Card>
+      )
+    );
+  };
+
+  const renderOrganizationCard = () => {
+    return (
+      data.organizationData && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>Organization Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h3 className="text-lg font-semibold">{data.organizationData.username}</h3>
+            <p>
+              <strong>Email:</strong> {data.organizationData.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {data.organizationData.phoneNo}
+            </p>
+            <p>
+              <strong>Address:</strong> {data.organizationData.address}
+            </p>
+            <p>
+              <strong>City:</strong> {data.organizationData.city}
+            </p>
+            <p>
+              <strong>Country:</strong> {data.organizationData.country}
+            </p>
+          </CardContent>
+        </Card>
+      )
+    );
+  };
 
   return (
     <Form {...form}>
@@ -156,13 +196,16 @@ const AdoptionForm = () => {
         className="container mx-auto p-4 space-y-6"
         style={{ backgroundImage: `url(${Bg})` }}
       >
-        <h1 className="text-3xl font-bold text-center mb-6">Pet Adoption Application</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>{renderPetCard()}</div>
+          <div>{renderOrganizationCard()}</div>
+        </div>
 
         <Card>
           <CardHeader>
             <CardTitle>Adoption Application Form</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4">
             {/* Personal Information */}
             <div>
               <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
@@ -504,20 +547,6 @@ const AdoptionForm = () => {
           </Button>
         </div>
       </form>
-
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Thank you for your application!</DialogTitle>
-            <DialogDescription>Your application has been submitted successfully.</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button onClick={handleCloseDialog}>Close</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </Form>
   );
 };
