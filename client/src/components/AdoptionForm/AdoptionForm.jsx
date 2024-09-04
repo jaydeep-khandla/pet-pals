@@ -48,7 +48,7 @@ const formSchema = z.object({
 const AdoptionForm = () => {
   const [data, setData] = useState({
     petData: null,
-    userData: null,
+    adopterData: null,
     organizationData: null
   });
   // const [loading, setLoading] = useState(true);
@@ -132,14 +132,14 @@ const AdoptionForm = () => {
   }, [user, orgId, petId]);
 
   useEffect(() => {
-    if (data.userData) {
-      Object.keys(data.userData).forEach((key) => {
+    if (data.adopterData) {
+      Object.keys(data.adopterData).forEach((key) => {
         if (form.getValues(key) !== undefined) {
           form.setValue(key, data.userData[key]);
         }
       });
     }
-  }, [data.userData, form]);
+  }, [data.adopterData, form]);
 
   function onSubmit(values) {
     console.log("Form submitted with values:", values);
