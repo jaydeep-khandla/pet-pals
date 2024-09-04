@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-// import axios from "@/Api/axios";
+import axios from "@/Api/axios";
 import { fetchAllData } from "@/helperFuncs/adoptionData";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -12,9 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Textarea } from "../ui/textarea";
 import { Checkbox } from "../ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
-import { Dialog, DialogDescription, DialogTitle, DialogHeader, DialogContent, DialogClose, DialogFooter } from "../ui/dialog";
 import Bg from "@/assets/images/bg.jpg";
 import useAuth from "@/hooks/useAuth";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -51,11 +52,10 @@ const AdoptionForm = () => {
     adopterData: null,
     organizationData: null
   });
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
 
   const { user } = useAuth();
   const [openDialog, setOpenDialog] = useState(false);
+  const [formData, setFormData] = useState(null);
 
   const location = useLocation();
   const { petId, orgId } = location?.state ?? {};
@@ -87,23 +87,6 @@ const AdoptionForm = () => {
       agreeTerms: false,
     },
   });
-  // useEffect(() => {
-
-  //   if (!user || !user?.id) return;
-
-  //   const init = async () => {
-  //     try {
-  //       const response = await fetchUser(user?.id);
-  //       setUserData(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-
-  //     }
-  //   }
-
-  //   init();
-
-  // }, [user]);
 
   useEffect(() => {
     if (!user || !user.id) return;
@@ -112,19 +95,11 @@ const AdoptionForm = () => {
 
     const fetchData = async () => {
       try {
-        // setLoading(true);
         const result = await fetchAllData(petId, userIds);
         setData(result);
         console.log(result);
-
       } catch (err) {
-        // setError(err);
         console.log(err);
-
-      } finally {
-        // setLoading(false);
-        console.log(1);
-
       }
     };
 
@@ -142,12 +117,35 @@ const AdoptionForm = () => {
   }, [data.adopterData, form]);
 
   function onSubmit(values) {
-    console.log("Form submitted with values:", values);
     // Here you would typically send the form data to your backend
     setOpenDialog(true);
+    setFormData({
+      ...values,
+      petId: data.petData?._id,
+      organizationId: data.organizationData?.id,
+      adopterId: data.adopterData?.id,
+    });
   }
 
-  const handleCloseDialog = () => setOpenDialog(false);
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData(null);
+  };
+
+  const handleFormSubmit = async () => {
+    if (!formData) return;
+
+    try {
+      const result = await axios.post("/application/adoption", formData); // Fixed URL typo
+      toast.success("Your application has been submitted successfully!");
+      console.log(result);
+    } catch (error) {
+      toast.error("An error occurred while submitting the form. Please try again.");
+      console.error(error);
+    } finally {
+      handleCloseDialog();
+    }
+  };
 
   return (
     <Form {...form}>
@@ -505,19 +503,7 @@ const AdoptionForm = () => {
         </div>
       </form>
 
-      <Dialog open={openDialog} onOpenChange={setOpenDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Thank you for your application!</DialogTitle>
-            <DialogDescription>Your application has been submitted successfully.</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button onClick={handleCloseDialog}>Close</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog openDialog={openDialog} closeDialog={handleCloseDialog} onSubmit={handleFormSubmit} />
     </Form>
   );
 };

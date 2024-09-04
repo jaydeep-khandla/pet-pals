@@ -7,7 +7,8 @@ import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, Dialog
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-toastify";
-import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog";
+import { imageUpload } from "@/helperFuncs/cloudUpload";
 
 export default function OrgProfile({ user }) {
   const [petData, setPetData] = useState({
@@ -73,25 +74,29 @@ export default function OrgProfile({ user }) {
     setOpenDialog(true);
   }
 
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch("/api/pets", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(petData),
-      });
+  // const handleSubmit = async () => {
+  //   try {
+  //     const response = await fetch("/api/pets", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(petData),
+  //     });
 
-      if (response.ok) {
-        console.log("Pet added successfully");
-        // Reset form or close dialog
-      } else {
-        console.error("Failed to add pet");
-      }
-    } catch (error) {
-      console.error("Error adding pet:", error);
-    }
+  //     if (response.ok) {
+  //       console.log("Pet added successfully");
+  //       // Reset form or close dialog
+  //     } else {
+  //       console.error("Failed to add pet");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error adding pet:", error);
+  //   }
+  // };
+
+  const handleSubmit = () => {
+
   };
 
   return (
