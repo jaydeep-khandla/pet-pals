@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import axios from "@/Api/axios";
+import { fetchAllData } from "@/helperFuncs/adoptionData";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +14,8 @@ import { Checkbox } from "../ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
 import Bg from "@/assets/images/bg.jpg";
 import useAuth from "@/hooks/useAuth";
-import { fetchAllData } from "@/helperFuncs/adoptionData";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   fullName: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -53,6 +55,7 @@ const AdoptionForm = () => {
   });
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [formData, setFormData] = useState(null);
   const { user } = useAuth();
   const location = useLocation();
   const { petId, orgId } = location.state || {};
@@ -85,50 +88,63 @@ const AdoptionForm = () => {
       agreeTerms: false,
     },
   });
+
   useEffect(() => {
     if (!user || !user.id) return;
 
     const fetchData = async () => {
-      const userIds = [user.id, orgId];
-      const result = await fetchAllData(petId, userIds);
-      setData(result);
+      try {
+        const result = await fetchAllData(petId, userIds);
+        setData(result);
+        console.log(result);
+      } catch (err) {
+        console.log(err);
+      }
     };
 
     fetchData();
   }, [user, orgId, petId]);
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        setLoading(true);
-        // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
-        const response = await axios.get("user/:id");
-        const userData = response.data;
-
-        // Autofill form with fetched data
-        Object.keys(userData).forEach((key) => {
-          if (form.getValues(key) !== undefined) {
-            form.setValue(key, userData[key]);
-          }
-        });
-
-        setError(null);
-      } catch (err) {
-        setError("Failed to fetch user information. Please fill the form manually.");
-        console.error("Error fetching user info:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserInfo();
-  }, [form]);
+    if (data.adopterData) {
+      Object.keys(data.adopterData).forEach((key) => {
+        if (form.getValues(key) !== undefined) {
+          form.setValue(key, data.adopterData[key]);
+        }
+      });
+    }
+  }, [data.adopterData, form]);
 
   function onSubmit(values) {
-    console.log("Form submitted with values:", values);
+    // Here you would typically send the form data to your backend
     setOpenDialog(true);
+    setFormData({
+      ...values,
+      petId: data.petData?._id,
+      organizationId: data.organizationData?.id,
+      adopterId: data.adopterData?.id,
+    });
   }
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData(null);
+  };
+
+  const handleFormSubmit = async () => {
+    if (!formData) return;
+
+    try {
+      const result = await axios.post("/application/adoption", formData); // Fixed URL typo
+      toast.success("Your application has been submitted successfully!");
+      console.log(result);
+    } catch (error) {
+      toast.error("An error occurred while submitting the form. Please try again.");
+      console.error(error);
+    } finally {
+      handleCloseDialog();
+    }
+  };
   const renderPetCard = () => {
     return (
       data.petData && (
@@ -547,6 +563,8 @@ const AdoptionForm = () => {
           </Button>
         </div>
       </form>
+
+      <ConfirmDialog openDialog={openDialog} closeDialog={handleCloseDialog} onSubmit={handleFormSubmit} />
     </Form>
   );
 };

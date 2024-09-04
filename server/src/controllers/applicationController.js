@@ -7,7 +7,7 @@ exports.createApplication = async (req, res) => {
     const application = await applicationServices.createAdoptionApplication(
       req.body
     );
-    console.log(application);
+    // console.log(application);
 
     // Retrieve organization, adopterId, and adoptionApplicationId from the created application
     const {
@@ -23,9 +23,9 @@ exports.createApplication = async (req, res) => {
     const updateUser = async (userId) => {
       if (userId) {
         try {
-          await updateUserByField(
+          await userServices.updateUserByField(
             { _id: userId },
-            { $push: { adoptionApplications_ids: adoptionApplicationId } }
+            { $push: { adoption_applications: adoptionApplicationId } }
           );
         } catch (error) {
           errors.push({ userId, error: error.message });
@@ -39,6 +39,7 @@ exports.createApplication = async (req, res) => {
 
     // Check if there were any errors
     if (errors.length > 0) {
+      console.log(errors);
       res
         .status(400)
         .json({ message: "Partial failure in updating users", errors });
