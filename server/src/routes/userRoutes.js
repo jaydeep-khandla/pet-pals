@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const userController = require('../controllers/userController');
+const userController = require("../controllers/userController");
 // const verifyToken = require('../middlewares/verifyToken');
 
-router.get('/:id', userController.fetchUser);
+router.get("/:id", userController.fetchUser);
 
-router.get('/shelters', userController.fetchOrganizations);
+router.get("/shelters", userController.fetchOrganizations);
 
-router.post('/multiple', userController.fetchUsersByIds);
+router.post("/multiple", userController.fetchUsersByIds);
 
 module.exports = router;
