@@ -135,7 +135,7 @@ const AdoptionForm = () => {
     if (data.adopterData) {
       Object.keys(data.adopterData).forEach((key) => {
         if (form.getValues(key) !== undefined) {
-          form.setValue(key, data.userData[key]);
+          form.setValue(key, data.adopterData[key]);
         }
       });
     }
