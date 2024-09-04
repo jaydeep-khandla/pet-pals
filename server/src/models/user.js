@@ -68,6 +68,12 @@ const userSchema = new mongoose.Schema(
         ref: "Pet",
       },
     ],
+    adoption_applications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "AdoptionApplication",
+      },
+    ],
   },
   { timestamps: true }
 );
