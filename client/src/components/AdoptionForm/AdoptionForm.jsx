@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,8 +59,6 @@ const AdoptionForm = () => {
   const { user } = useAuth();
   const location = useLocation();
   const { petId, orgId } = location.state || {};
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -91,6 +89,8 @@ const AdoptionForm = () => {
 
   useEffect(() => {
     if (!user || !user.id) return;
+
+    const userIds = [user.id, orgId];
 
     const fetchData = async () => {
       try {
@@ -145,6 +145,7 @@ const AdoptionForm = () => {
       handleCloseDialog();
     }
   };
+
   const renderPetCard = () => {
     return (
       data.petData && (

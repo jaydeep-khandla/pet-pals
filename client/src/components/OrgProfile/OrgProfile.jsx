@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "react-toastify";
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog";
 import { imageUpload } from "@/helperFuncs/cloudUpload";
+import axios from "@/Api/axios";
 
 export default function OrgProfile({ user }) {
   const [petData, setPetData] = useState({
@@ -95,8 +96,22 @@ export default function OrgProfile({ user }) {
   //   }
   // };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    try {
+      const imgUrl = await imageUpload(fileInputRef.current.files[0]);
 
+      if (!imgUrl) {
+        toast.error("Error uploading image. Please try again.");
+        return;
+      }
+
+      setPetData({ ...petData, pet_primary_photo_url: imgUrl });
+
+      const response = await axios.post("/pets/add", petData)
+
+    } catch (error) {
+      toast.error("Error adding pet. Please try again.");
+    }
   };
 
   return (
