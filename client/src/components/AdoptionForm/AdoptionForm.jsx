@@ -154,21 +154,21 @@ const AdoptionForm = () => {
             <CardTitle>Pet Information</CardTitle>
           </CardHeader>
           <CardContent>
-            <h3 className="text-lg font-semibold">{data.petData.pet_name}</h3>
+            <h3 className="text-lg font-semibold">{data.petData?.pet_name}</h3>
             <p>
-              <strong>Type:</strong> {data.petData.pet_type}
+              <strong>Type:</strong> {data.petData?.pet_type}
             </p>
             <p>
-              <strong>Breed:</strong> {data.petData.pet_breeds}
+              <strong>Breed:</strong> {data.petData?.pet_breeds}
             </p>
             <p>
-              <strong>Age:</strong> {data.petData.pet_age}
+              <strong>Age:</strong> {data.petData?.pet_age}
             </p>
             <p>
-              <strong>Sex:</strong> {data.petData.pet_sex}
+              <strong>Sex:</strong> {data.petData?.pet_sex}
             </p>
             <p>
-              <strong>Size:</strong> {data.petData.pet_size}
+              <strong>Size:</strong> {data.petData?.pet_size}
             </p>
           </CardContent>
         </Card>
@@ -184,21 +184,21 @@ const AdoptionForm = () => {
             <CardTitle>Organization Information</CardTitle>
           </CardHeader>
           <CardContent>
-            <h3 className="text-lg font-semibold">{data.organizationData.username}</h3>
+            <h3 className="text-lg font-semibold">{data.organizationData?.username}</h3>
             <p>
-              <strong>Email:</strong> {data.organizationData.email}
+              <strong>Email:</strong> {data.organizationData?.email}
             </p>
             <p>
-              <strong>Phone:</strong> {data.organizationData.phoneNo}
+              <strong>Phone:</strong> {data.organizationData?.phoneNo}
             </p>
             <p>
-              <strong>Address:</strong> {data.organizationData.address}
+              <strong>Address:</strong> {data.organizationData?.address}
             </p>
             <p>
-              <strong>City:</strong> {data.organizationData.city}
+              <strong>City:</strong> {data.organizationData?.city}
             </p>
             <p>
-              <strong>Country:</strong> {data.organizationData.country}
+              <strong>Country:</strong> {data.organizationData?.country}
             </p>
           </CardContent>
         </Card>
