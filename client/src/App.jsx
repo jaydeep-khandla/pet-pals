@@ -14,6 +14,7 @@ import PetProfile from "@/components/PetProfile/PetProfile";
 import PersistLogin from "@/components/PersistLogin/PersistLogin";
 import ContactPage from "@/components/ContactPage/ContactPage";
 import ServicesPage from "./components/Services/Services";
+import AboutPage from "./components/aboutPage/aboutPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/PetList" element={<PetSearchPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route element={<RequireAuth />}>
               <Route path="/pet/:petId" element={<PetProfile />} />
               <Route path="/user/:id" element={<ProfileRoute />} />

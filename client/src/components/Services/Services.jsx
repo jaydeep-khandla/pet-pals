@@ -22,7 +22,7 @@ export default function ServicesPage() {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 pt-8">
+      <div className="min-h-screen bg-gradient-to-b bg-[#f4f1ea] pt-8">
         {/* Hero Section */}
         <section className="relative h-[40vh] overflow-hidden ">
           <img
@@ -33,7 +33,14 @@ export default function ServicesPage() {
             className="object-cover w-full h-full"
           />
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-4xl md:text-6xl font-bold text-white text-center">Our Services</h1>
+            <motion.div
+              className="text-center text-white"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h1 className="text-4xl md:text-5xl font-bold text-white font-serif text-center">Our Services</h1>
+            </motion.div>
           </div>
         </section>
 

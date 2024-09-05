@@ -6,6 +6,6 @@ router.get("/petlist", petController.getPets);
 
 router.get("/:id", petController.getPet);
 
-router.post("/add", petController.createPet);
+//router.post("/add", petController.createPet);
 
 module.exports = router;
