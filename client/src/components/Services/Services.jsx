@@ -9,6 +9,7 @@ import { PawPrint, Heart, Users, CheckCircle, Flower, Flower2, Calendar, FileTex
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
 import { useState, useEffect } from "react";
+import axios from "@/Api/axios";
 
 export default function ServicesPage() {
   const [shelters, setShelters] = useState([]); // State to hold all shelters

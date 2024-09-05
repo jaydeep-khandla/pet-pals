@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import PetCard from "@/components/PetList/PetCard";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -6,6 +6,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "../ui/checkbox";
 import { toast } from "react-toastify";
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog";
 import { imageUpload } from "@/helperFuncs/cloudUpload";
@@ -22,7 +23,7 @@ export default function OrgProfile({ user }) {
     pet_description: "",
     pet_primary_photo_url: "",
     pet_primary_photo_cropped_url: "",
-    pet_adoption_status: "Available",
+    pet_adoption_status: "adoptable",
     pet_published_date: new Date(),
     pet_type: "",
     pet_species_name: "",
@@ -41,6 +42,7 @@ export default function OrgProfile({ user }) {
     pet_location_address_postal_code: "",
     pet_location_address_country: "",
     pet_organization_name: "",
+    pet_organization_id: user?.id,
     pet_home_environment_attributes_good_with_children: null,
     pet_home_environment_attributes_good_with_dogs: null,
     pet_home_environment_attributes_good_with_cats: null,
@@ -49,6 +51,16 @@ export default function OrgProfile({ user }) {
   const [openDialog, setOpenDialog] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    // Update pet_organization_id when user.id changes
+    if (user?.id) {
+      setPetData((prevData) => ({
+        ...prevData,
+        pet_organization_id: user.id,
+      }));
+    }
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -71,30 +83,17 @@ export default function OrgProfile({ user }) {
     }
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault();
     setOpenDialog(true);
   }
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     const response = await fetch("/api/pets", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(petData),
-  //     });
-
-  //     if (response.ok) {
-  //       console.log("Pet added successfully");
-  //       // Reset form or close dialog
-  //     } else {
-  //       console.error("Failed to add pet");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error adding pet:", error);
-  //   }
-  // };
+  const handleCheckboxChange = (name, value) => {
+    setPetData({
+      ...petData,
+      [name]: value,
+    });
+  };
 
   const handleSubmit = async () => {
     try {
@@ -107,7 +106,14 @@ export default function OrgProfile({ user }) {
 
       setPetData({ ...petData, pet_primary_photo_url: imgUrl });
 
-      const response = await axios.post("/pets/add", petData)
+      const response = await axios.post("/pets/add", petData);
+
+      console.log(response);
+
+      if (response.status === 201) {
+        toast.success("Pet added successfully.");
+        setOpenDialog(false);
+      }
 
     } catch (error) {
       toast.error("Error adding pet. Please try again.");
@@ -115,7 +121,7 @@ export default function OrgProfile({ user }) {
   };
 
   return (
-    <div className="bg-background text-foreground mt-20">
+    <div className="bg-background text-foreground my-20">
       <header className="bg-primary text-primary-foreground py-6 px-4 md:px-6">
         <div className="container mx-auto flex items-center justify-between">
           <div>
@@ -322,6 +328,46 @@ export default function OrgProfile({ user }) {
                 <Label htmlFor="pet_location_address_country">Country</Label>
                 <Input id="pet_location_address_country" name="pet_location_address_country" value={petData.pet_location_address_country} onChange={handleInputChange} required />
               </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="pet_home_environment_attributes_good_with_children">
+                  <Checkbox
+                    className="mr-2"
+                    id="pet_home_environment_attributes_good_with_children"
+                    name="pet_home_environment_attributes_good_with_children"
+                    checked={petData.pet_home_environment_attributes_good_with_children}
+                    onChange={(e) => handleCheckboxChange("pet_home_environment_attributes_good_with_children", e.target.checked)}
+                  />
+                  Good with Children?
+                </Label>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="pet_home_environment_attributes_good_with_dogs">
+                  <Checkbox
+                    className="mr-2"
+                    id="pet_home_environment_attributes_good_with_dogs"
+                    name="pet_home_environment_attributes_good_with_dogs"
+                    checked={petData.pet_home_environment_attributes_good_with_dogs}
+                    onChange={(e) => handleCheckboxChange("pet_home_environment_attributes_good_with_dogs", e.target.checked)}
+                  />
+                  Good with Dogs?
+                </Label>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="pet_home_environment_attributes_good_with_cats">
+                  <Checkbox
+                    className="mr-2"
+                    id="pet_home_environment_attributes_good_with_cats"
+                    name="pet_home_environment_attributes_good_with_cats"
+                    checked={petData.pet_home_environment_attributes_good_with_cats}
+                    onChange={(e) => handleCheckboxChange("pet_home_environment_attributes_good_with_cats", e.target.checked)}
+                  />
+                  Good with Cats?
+                </Label>
+              </div>
+
 
               <DialogFooter>
                 <Button type="submit">Save Pet</Button>
