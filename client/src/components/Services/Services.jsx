@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
 import axios from "@/Api/axios";
@@ -8,14 +8,16 @@ import { useInView } from "react-intersection-observer";
 import { PawPrint, Heart, Users, CheckCircle, Flower, Flower2, Calendar, FileText, Gift } from "lucide-react";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
+import { Search } from "lucide-react";
 import { useState, useEffect } from "react";
-import axios from "@/Api/axios";
+import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
 
 export default function ServicesPage() {
-  const [shelters, setShelters] = useState([]); // State to hold all shelters
-  const [filteredShelters, setFilteredShelters] = useState([]); // State to hold filtered shelters
-  const [citySearch, setCitySearch] = useState(""); // State to hold the city search input
-
+  const [shelters, setShelters] = useState([]);
+  const [searchCity, setSearchCity] = useState("");
+  const [filteredShelters, setFilteredShelters] = useState([]);
+  const navigate = useNavigate();
   const { ref: rehomeRef, inView: rehomeInView } = useInView({ triggerOnce: false });
   const { ref: funeralRef, inView: funeralInView } = useInView({ triggerOnce: false });
   const { ref: supportRef, inView: supportInView } = useInView({ triggerOnce: false });
@@ -26,31 +28,55 @@ export default function ServicesPage() {
     visible: { scale: 1, opacity: 1 },
   };
 
-  useEffect(() => {
-    // Fetch shelters data from your API
-    const fetchShelters = async () => {
-      try {
-        const response = await axios.get("/user/shelters", {
-          params: {
-            userType: "animal_shelter",
-          },
-        });
-        const data = response.data;
-        setShelters(data);
-        setFilteredShelters(data);
-        console.log(data); // Initially, all shelters are shown
-      } catch (error) {
-        console.error("Failed to fetch shelters:", error);
-      }
-    };
-
-    fetchShelters();
-  }, []);
   // useEffect(() => {
+  //   const fetchShelters = async () => {
+  //     try {
+  //       const response = await axios.get("/user/shelters", {
+  //         params: { userType: "animal_shelter" },
+  //       });
+  //       console.log(response.data);
+  //       setShelters(response.data);
+  //       setFilteredShelters(response.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch shelters:", error);
+  //     }
+  //   };
 
-  //   const filtered = shelters.filter((shelter) => shelter.city.toLowerCase().includes(citySearch.toLowerCase()));
-  //   setFilteredShelters(filtered);
-  // }, [citySearch, shelters]);
+  //   fetchShelters();
+  // }, []);
+  useEffect(() => {
+    axios
+      .get("/user/shelters", {
+        params: { userType: "animal_shelter" },
+      })
+      .then((response) => {
+        console.log(response.data); // Log the response to check the structure
+
+        // If shelters array is inside response.data.shelters
+        if (Array.isArray(response.data.shelters)) {
+          setShelters(response.data.shelters); // Access the correct property
+          setFilteredShelters(response.data.shelters); // Set initial filtered shelters
+        } else {
+          console.error("Expected an array of shelters but got:", typeof response.data.shelters);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching shelters:", error);
+      });
+  }, []);
+
+  // Filter shelters by city
+  const handleSearch = (e) => {
+    const city = e.target.value.toLowerCase();
+    setSearchCity(city);
+
+    const filtered = shelters.filter((shelter) => shelter.address.toLowerCase().includes(city));
+    setFilteredShelters(filtered);
+  };
+  const handleCardClick = (id) => {
+    navigate(`/user-public/${id}`); // Redirect to the public profile page using the shelter ID
+  };
+
   return (
     <>
       <Header />
@@ -206,27 +232,39 @@ export default function ServicesPage() {
                 </Card>
               </div>
             </motion.div>
-            {/* <div>
-              <h1>Services Page</h1>
-              <div className="search-engine">
-                <input type="text" placeholder="Search by city" value={citySearch} onChange={(e) => setCitySearch(e.target.value)} />
-                <button onClick={() => setCitySearch(citySearch)}>Search</button>
+            <div className="container mx-auto  rounded-2xl p-6 bg-gradient-to-r from-yellow-100 to-orange-200 shadow-lg">
+              <h1 className="text-3xl font-bold mb-6 text-center font-serif text-black">Find Animal Shelters</h1>
+              <div className="relative mb-8">
+                <Input
+                  type="text"
+                  className="w-full pl-10 pr-4 py-2 rounded-full border-2 border-purple-300 focus:border-purple-500 focus:ring focus:ring-purple-200 focus:ring-opacity-50"
+                  placeholder="Enter city to search shelters"
+                  value={searchCity}
+                  onChange={handleSearch}
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" size={20} />
               </div>
-              <div className="shelter-list">
-                {filteredShelters.length > 0 ? (
-                  filteredShelters.map((shelter) => (
-                    <div key={shelter.id} className="shelter-item">
-                      <h2>{shelter.username}</h2>
-                      <p>{shelter.city}</p>
-                      <p>{shelter.address}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No shelters found</p>
-                )}
-              </div>
-            </div> */}
 
+              {searchCity && filteredShelters.length > 0 ? (
+                <div className="space-y-4">
+                  {filteredShelters.map((shelter) => (
+                    <Card
+                      key={shelter._id}
+                      className=" overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+                      onClick={() => handleCardClick(shelter._id)}
+                    >
+                      <CardContent className="p-4">
+                        <h2 className="text-xl font-semibold">{shelter.username}</h2>
+                        <p className="text-gray-600">{shelter.address}</p>
+                        <p className="text-gray-500">Email: {shelter.email}</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : searchCity ? (
+                <p className="text-center text-red-500 font-semibold">No shelters found for this city.</p>
+              ) : null}
+            </div>
             {/* Additional Support Card */}
             <motion.div
               ref={supportRef}
