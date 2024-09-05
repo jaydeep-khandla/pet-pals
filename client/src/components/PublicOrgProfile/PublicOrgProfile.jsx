@@ -40,10 +40,10 @@ export default function PublicOrgProfile({ user }) {
                         <p className="text-sm">Helping pets find their forever homes</p>
                     </div>
                     <div>
-                        <Button variant="secondary" className="hidden ml-4 md:inline-flex" onClick={() => navigate("/rehome-form")} >
+                        <Button variant="secondary" className="hidden ml-4 md:inline-flex" onClick={() => navigate("/rehome-form", { state: { orgId: user.id } })} >
                             Re-home
                         </Button>
-                        <Button variant="secondary" className="hidden ml-4 md:inline-flex" onClick={() => navigate("/funeral-form")} >
+                        <Button variant="secondary" className="hidden ml-4 md:inline-flex" onClick={() => navigate("/funeral-form", { state: { orgId: user.id } })} >
                             Funeral
                         </Button>
                     </div>

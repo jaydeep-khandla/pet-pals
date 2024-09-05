@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -7,6 +7,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useLocation } from "react-router-dom";
+import useAuth from "@/hooks/useAuth";
+import ConfirmDialog from "../ConfirmDialog/ConfirmDialog";
+import axios from "@/Api/axios";
+import { toast } from "react-toastify";
+import { set } from "date-fns";
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
@@ -34,8 +40,8 @@ const formSchema = z.object({
   petName: z.string().min(2, {
     message: "Pet name must be at least 2 characters.",
   }),
-  petAge: z.number().nonnegative({
-    message: "Pet age must be a positive number.",
+  petAge: z.number().int().nonnegative({
+    message: "Pet age must be a positive integer.",
   }),
   petBreed: z.string().min(2, {
     message: "Pet breed must be at least 2 characters.",
@@ -77,10 +83,66 @@ export default function ReHomeApplicationForm() {
     },
   });
 
+  const location = useLocation();
+  const { orgId } = location.state;
+  const { user } = useAuth();
+  const userId = user?.id;
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, organizationId: orgId, applicantId: userId }));
+  }, [orgId, userId]);
+
+  useEffect(() => {
+    console.log(formData);
+  }, [formData]);
+
   function onSubmit(values) {
     console.log(values);
-    // Here you would typically send the form data to your backend
+    setFormData({
+      ...values,
+      organizationId: orgId,
+      applicantId: userId,
+    });
+    setOpenDialog(true);
   }
+
+  const handleFormSubmit = async () => {
+    try {
+      // Replace with your actual API endpoint
+      const apiEndpoint = 'application/rehome';
+
+      // Make the POST request
+      const response = await axios.post(apiEndpoint, formData);
+
+      // Handle successful response
+      console.log('Form submitted successfully:', response.data);
+      toast.success("Application submitted successfully!");
+
+      setFormData({});
+      form.reset();
+      setOpenDialog(false);
+
+      // You might want to add further actions here, such as showing a success message or redirecting
+    } catch (error) {
+      // Handle error
+      console.error('Error submitting form:', error);
+      toast.error("An error occurred. Please try again.");
+
+      setFormData({});
+      form.reset();
+
+      // Optionally, you might want to show an error message to the user
+    } finally {
+      // Close the dialog after submission attempt
+      setOpenDialog(false);
+    }
+  };
+
+  const handleCloseDialog = () => setOpenDialog(false);
 
   return (
     <>
@@ -212,7 +274,11 @@ export default function ReHomeApplicationForm() {
                   <FormItem>
                     <FormLabel>Pet Age</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input
+                        type="number"
+                        value={field.value || ""}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -408,6 +474,7 @@ export default function ReHomeApplicationForm() {
           </form>
         </Form>
       </div>
+      <ConfirmDialog openDialog={openDialog} closeDialog={handleCloseDialog} onSubmit={handleFormSubmit} />
     </>
 
   );

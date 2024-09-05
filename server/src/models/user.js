@@ -74,6 +74,18 @@ const userSchema = new mongoose.Schema(
         ref: "AdoptionApplication",
       },
     ],
+    rehome_applications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "RehomeApplication",
+      },
+    ],
+    funeral_applications: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "FuneralApplication",
+      },
+    ],
   },
   { timestamps: true }
 );
