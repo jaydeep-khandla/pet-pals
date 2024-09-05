@@ -3,12 +3,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
+import axios from "@/Api/axios";
 import { useInView } from "react-intersection-observer";
 import { PawPrint, Heart, Users, CheckCircle, Flower, Flower2, Calendar, FileText, Gift } from "lucide-react";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
+import { useState, useEffect } from "react";
 
 export default function ServicesPage() {
+  const [shelters, setShelters] = useState([]); // State to hold all shelters
+  const [filteredShelters, setFilteredShelters] = useState([]); // State to hold filtered shelters
+  const [citySearch, setCitySearch] = useState(""); // State to hold the city search input
+
   const { ref: rehomeRef, inView: rehomeInView } = useInView({ triggerOnce: false });
   const { ref: funeralRef, inView: funeralInView } = useInView({ triggerOnce: false });
   const { ref: supportRef, inView: supportInView } = useInView({ triggerOnce: false });
@@ -19,6 +25,31 @@ export default function ServicesPage() {
     visible: { scale: 1, opacity: 1 },
   };
 
+  useEffect(() => {
+    // Fetch shelters data from your API
+    const fetchShelters = async () => {
+      try {
+        const response = await axios.get("/user/shelters", {
+          params: {
+            userType: "animal_shelter",
+          },
+        });
+        const data = response.data;
+        setShelters(data);
+        setFilteredShelters(data);
+        console.log(data); // Initially, all shelters are shown
+      } catch (error) {
+        console.error("Failed to fetch shelters:", error);
+      }
+    };
+
+    fetchShelters();
+  }, []);
+  // useEffect(() => {
+
+  //   const filtered = shelters.filter((shelter) => shelter.city.toLowerCase().includes(citySearch.toLowerCase()));
+  //   setFilteredShelters(filtered);
+  // }, [citySearch, shelters]);
   return (
     <>
       <Header />
@@ -174,6 +205,26 @@ export default function ServicesPage() {
                 </Card>
               </div>
             </motion.div>
+            {/* <div>
+              <h1>Services Page</h1>
+              <div className="search-engine">
+                <input type="text" placeholder="Search by city" value={citySearch} onChange={(e) => setCitySearch(e.target.value)} />
+                <button onClick={() => setCitySearch(citySearch)}>Search</button>
+              </div>
+              <div className="shelter-list">
+                {filteredShelters.length > 0 ? (
+                  filteredShelters.map((shelter) => (
+                    <div key={shelter.id} className="shelter-item">
+                      <h2>{shelter.username}</h2>
+                      <p>{shelter.city}</p>
+                      <p>{shelter.address}</p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No shelters found</p>
+                )}
+              </div>
+            </div> */}
 
             {/* Additional Support Card */}
             <motion.div
