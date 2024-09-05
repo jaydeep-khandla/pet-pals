@@ -1,6 +1,9 @@
 const { Pet } = require("../models");
 
 class petServices {
+  async createPet(pet) {
+    return await Pet.create(pet);
+  }
 
   async getPets() {
     return await Pet.find();
