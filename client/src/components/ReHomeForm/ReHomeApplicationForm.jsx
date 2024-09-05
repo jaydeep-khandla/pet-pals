@@ -3,10 +3,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
   applicantName: z.string().min(2, {
@@ -15,16 +16,40 @@ const formSchema = z.object({
   applicantEmail: z.string().email({
     message: "Please enter a valid email address.",
   }),
-  phoneNumber: z.string().optional(),
-  petId: z.string().min(1, {
-    message: "Please select a pet.",
+  applicantAddress: z.string().min(5, {
+    message: "Address must be at least 5 characters.",
   }),
-  reasonForRehoming: z.string().min(10, {
+  applicantCity: z.string().min(2, {
+    message: "City must be at least 2 characters.",
+  }),
+  applicantState: z.string().min(2, {
+    message: "State must be at least 2 characters.",
+  }),
+  applicantZipCode: z.string().regex(/^\d{5}(-\d{4})?$/, {
+    message: "Invalid ZIP code. Use 5 digits or 5+4 format.",
+  }),
+  applicantPhoneNumber: z.string().regex(/^\d{10}$/, {
+    message: "Invalid phone number. Please enter 10 digits.",
+  }),
+  petName: z.string().min(2, {
+    message: "Pet name must be at least 2 characters.",
+  }),
+  petAge: z.number().nonnegative({
+    message: "Pet age must be a positive number.",
+  }),
+  petBreed: z.string().min(2, {
+    message: "Pet breed must be at least 2 characters.",
+  }),
+  petGender: z.enum(["male", "female"], {
+    message: "Please select a valid gender.",
+  }),
+  petVaccinationStatus: z.boolean(),
+  petNeuteredStatus: z.boolean(),
+  petGoodWithKids: z.boolean(),
+  petGoodWithPets: z.boolean(),
+  petHouseTrained: z.boolean(),
+  petRehomeReason: z.string().min(10, {
     message: "Please provide a detailed reason for rehoming (min 10 characters).",
-  }),
-  rehomingFee: z.number().min(0).optional(),
-  preferredNewHomeType: z.string().min(1, {
-    message: "Please select a preferred home type.",
   }),
 });
 
@@ -34,11 +59,21 @@ export default function ReHomeApplicationForm() {
     defaultValues: {
       applicantName: "",
       applicantEmail: "",
-      phoneNumber: "",
-      petId: "",
-      reasonForRehoming: "",
-      rehomingFee: 0,
-      preferredNewHomeType: "",
+      applicantAddress: "",
+      applicantCity: "",
+      applicantState: "",
+      applicantZipCode: "",
+      applicantPhoneNumber: "",
+      petName: "",
+      petAge: 0,
+      petBreed: "",
+      petGender: "",
+      petVaccinationStatus: false,
+      petNeuteredStatus: false,
+      petGoodWithKids: false,
+      petGoodWithPets: false,
+      petHouseTrained: false,
+      petRehomeReason: "",
     },
   });
 
@@ -48,125 +83,332 @@ export default function ReHomeApplicationForm() {
   }
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">ReHome Application</h2>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="applicantName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="John Doe" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="applicantEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input type="email" placeholder="john@example.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="phoneNumber"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone Number (optional)</FormLabel>
-                <FormControl>
-                  <Input type="tel" placeholder="+1 (555) 123-4567" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="petId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pet</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+    <>
+      <h1 className="text-4xl font-bold mt-6 mb-2 text-center text-gray-800">ReHome Application</h1>
+      <div className="max-w-5xl mx-auto p-6 bg-white rounded-lg shadow-lg mb-20">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="applicantName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="applicantEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input type="email" placeholder="john@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="applicantAddress"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Address</FormLabel>
+                    <FormControl>
+                      <Input placeholder="123 Main St" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="applicantCity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>City</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Springfield" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="applicantState"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>State</FormLabel>
+                    <FormControl>
+                      <Input placeholder="IL" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="applicantZipCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>ZIP Code</FormLabel>
+                    <FormControl>
+                      <Input placeholder="62704" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="applicantPhoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input type="tel" placeholder="1234567890" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="petName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pet Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Fluffy" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="petAge"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pet Age</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="petBreed"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pet Breed</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Labrador" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="petGender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pet Gender</FormLabel>
+                    <FormControl>
+                      <RadioGroup value={field.value} onValueChange={field.onChange}>
+                        <div className="space-y-2">
+                          <div className="flex items-center">
+                            <RadioGroupItem value="male" id="petGenderMale" />
+                            <label htmlFor="petGenderMale" className="ml-2">Male</label>
+                          </div>
+                          <div className="flex items-center">
+                            <RadioGroupItem value="female" id="petGenderFemale" />
+                            <label htmlFor="petGenderFemale" className="ml-2">Female</label>
+                          </div>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="petVaccinationStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Vaccination Status</FormLabel>
+                    <FormControl>
+                      <RadioGroup value={field.value ? "true" : "false"} onValueChange={value => field.onChange(value === "true")}>
+                        <div className="space-y-2">
+                          <div className="flex items-center">
+                            <RadioGroupItem value="true" id="petVaccinationYes" />
+                            <label htmlFor="petVaccinationYes" className="ml-2">Vaccinated</label>
+                          </div>
+                          <div className="flex items-center">
+                            <RadioGroupItem value="false" id="petVaccinationNo" />
+                            <label htmlFor="petVaccinationNo" className="ml-2">Not Vaccinated</label>
+                          </div>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="petNeuteredStatus"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Neutered Status</FormLabel>
+                    <FormControl>
+                      <RadioGroup value={field.value ? "true" : "false"} onValueChange={value => field.onChange(value === "true")}>
+                        <div className="space-y-2">
+                          <div className="flex items-center">
+                            <RadioGroupItem value="true" id="petNeuteredYes" />
+                            <label htmlFor="petNeuteredYes" className="ml-2">Neutered</label>
+                          </div>
+                          <div className="flex items-center">
+                            <RadioGroupItem value="false" id="petNeuteredNo" />
+                            <label htmlFor="petNeuteredNo" className="ml-2">Not Neutered</label>
+                          </div>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="petGoodWithKids"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Good with Kids</FormLabel>
+                    <FormControl>
+                      <RadioGroup value={field.value ? "true" : "false"} onValueChange={value => field.onChange(value === "true")}>
+                        <div className="space-y-2">
+                          <div className="flex items-center">
+                            <RadioGroupItem value="true" id="petGoodWithKidsYes" />
+                            <label htmlFor="petGoodWithKidsYes" className="ml-2">Yes</label>
+                          </div>
+                          <div className="flex items-center">
+                            <RadioGroupItem value="false" id="petGoodWithKidsNo" />
+                            <label htmlFor="petGoodWithKidsNo" className="ml-2">No</label>
+                          </div>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FormField
+                control={form.control}
+                name="petGoodWithPets"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Good with Other Pets</FormLabel>
+                    <FormControl>
+                      <RadioGroup value={field.value ? "true" : "false"} onValueChange={value => field.onChange(value === "true")}>
+                        <div className="space-y-2">
+                          <div className="flex items-center">
+                            <RadioGroupItem value="true" id="petGoodWithPetsYes" />
+                            <label htmlFor="petGoodWithPetsYes" className="ml-2">Yes</label>
+                          </div>
+                          <div className="flex items-center">
+                            <RadioGroupItem value="false" id="petGoodWithPetsNo" />
+                            <label htmlFor="petGoodWithPetsNo" className="ml-2">No</label>
+                          </div>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="petHouseTrained"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>House Trained</FormLabel>
+                    <FormControl>
+                      <RadioGroup value={field.value ? "true" : "false"} onValueChange={value => field.onChange(value === "true")}>
+                        <div className="space-y-2">
+                          <div className="flex items-center">
+                            <RadioGroupItem value="true" id="petHouseTrainedYes" />
+                            <label htmlFor="petHouseTrainedYes" className="ml-2">Yes</label>
+                          </div>
+                          <div className="flex items-center">
+                            <RadioGroupItem value="false" id="petHouseTrainedNo" />
+                            <label htmlFor="petHouseTrainedNo" className="ml-2">No</label>
+                          </div>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="petRehomeReason"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reason for Rehoming</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a pet" />
-                    </SelectTrigger>
+                    <Textarea placeholder="Please provide a detailed explanation..." className="resize-none" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="pet1">Fluffy (Cat)</SelectItem>
-                    <SelectItem value="pet2">Buddy (Dog)</SelectItem>
-                    <SelectItem value="pet3">Tweety (Bird)</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="reasonForRehoming"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Reason for Rehoming</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Please provide a detailed explanation..." className="resize-none" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="rehomingFee"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Rehoming Fee (optional)</FormLabel>
-                <FormControl>
-                  <Input type="number" min="0" step="0.01" {...field} />
-                </FormControl>
-                <FormDescription>Enter the amount in dollars</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="preferredNewHomeType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Preferred New Home Type</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select home type" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="apartment">Apartment</SelectItem>
-                    <SelectItem value="house">House</SelectItem>
-                    <SelectItem value="farm">Farm</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="w-full">
-            Submit Application
-          </Button>
-        </form>
-      </Form>
-    </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex justify-center">
+              <Button type="submit" className="w-1/2">
+                Submit Application
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </>
+
   );
 }

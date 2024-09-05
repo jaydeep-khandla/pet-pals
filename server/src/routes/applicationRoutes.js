@@ -3,7 +3,11 @@ const router = express.Router();
 const applicationController = require("../controllers/applicationController");
 // const verifyToken = require('../middlewares/verifyToken');
 
-router.post("/adoption", applicationController.createApplication);
+router.post("/adoption", applicationController.createAdoptionApplication);
+
+router.post("/rehome", applicationController.createRehomeApplication);
+
+router.post("/funeral", applicationController.createFuneralApplication);
 
 // router.get("/:id", applicationController.fetchApplication);
 

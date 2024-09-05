@@ -15,6 +15,8 @@ import PersistLogin from "@/components/PersistLogin/PersistLogin";
 import ContactPage from "@/components/ContactPage/ContactPage";
 import ServicesPage from "./components/Services/Services";
 import AboutPage from "./components/aboutPage/aboutPage";
+import ReHomeApplicationForm from "./components/ReHomeForm/ReHomeApplicationForm";
+import FuneralArrangementForm from "./components/FuneralArrangementForm/FuneralArrangementForm";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
               <Route path="/user/:id" element={<ProfileRoute />} />
               <Route path="/adoption-form" element={<AdoptionForm />} />
               <Route path="/user-public/:id" element={<PublicProfile />} />
+              <Route path="/rehome-form" element={<ReHomeApplicationForm />} />
+              <Route path="/funeral-form" element={<FuneralArrangementForm />} />
             </Route>
           </Route>
         </Route>

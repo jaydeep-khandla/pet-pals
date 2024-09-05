@@ -7,6 +7,8 @@ import { useInView } from "react-intersection-observer";
 import { PawPrint, Heart, Users, CheckCircle, Flower, Flower2, Calendar, FileText, Gift } from "lucide-react";
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
+import { useEffect } from "react";
+import axios from "@/Api/axios";
 
 export default function ServicesPage() {
   const { ref: rehomeRef, inView: rehomeInView } = useInView({ triggerOnce: false });
@@ -18,6 +20,19 @@ export default function ServicesPage() {
     hidden: { scale: 0.8, opacity: 0 },
     visible: { scale: 1, opacity: 1 },
   };
+
+  useEffect(() => {
+    const res = axios.get("/user/shelters", {
+      params: {
+        userType: "animal_shelter",
+      }
+    })
+
+    res.then((response) => {
+      console.log(response.data.shelters);
+    })
+
+  }, []);
 
   return (
     <>

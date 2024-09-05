@@ -20,8 +20,12 @@ To read more about using these font, please visit the Next.js documentation:
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import PetCard from "../PetList/PetCard";
+import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function PublicOrgProfile({ user }) {
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log('user: ', user);
@@ -35,9 +39,14 @@ export default function PublicOrgProfile({ user }) {
                         <h1 className="text-2xl font-bold">{user?.username}</h1>
                         <p className="text-sm">Helping pets find their forever homes</p>
                     </div>
-                    {/* <Button variant="secondary" className="hidden md:inline-flex">
-            Add Pet
-          </Button> */}
+                    <div>
+                        <Button variant="secondary" className="hidden ml-4 md:inline-flex" onClick={() => navigate("/rehome-form")} >
+                            Re-home
+                        </Button>
+                        <Button variant="secondary" className="hidden ml-4 md:inline-flex" onClick={() => navigate("/funeral-form")} >
+                            Funeral
+                        </Button>
+                    </div>
                 </div>
             </header>
             <main className="container mx-auto py-12 px-4 md:px-6">
