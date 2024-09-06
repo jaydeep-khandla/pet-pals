@@ -32,6 +32,8 @@ exports.fetchUser = async (req, res) => {
       address: user.address,
       address_url: user.address_url,
       pet_ids: user.pets_ids,
+      adoption_applications: user.adoption_applications,
+      rehome_applications: user.rehome_applications,
       isVerified: user.isVerified,
     };
 

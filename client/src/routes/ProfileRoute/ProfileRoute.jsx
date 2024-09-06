@@ -45,6 +45,11 @@ export default function ProfileRoute() {
     init();
   }, []);
 
+  useEffect(() => {
+    console.log(userProfile);
+
+  }, [userProfile]);
+
   const ProfileComponent = profileComponents[user?.userType] || UserProfile;
 
   return (

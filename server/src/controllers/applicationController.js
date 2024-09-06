@@ -110,7 +110,11 @@ exports.createFuneralApplication = async (req, res) => {
     // console.log(application);
 
     // Retrieve organization, adopterId, and adoptionApplicationId from the created application
-    const { organizationId, userId, _id: funeralApplicationId } = application;
+    const {
+      organizationId,
+      applicantId,
+      _id: funeralApplicationId,
+    } = application;
 
     // Array to keep track of errors
     const errors = [];
@@ -131,7 +135,7 @@ exports.createFuneralApplication = async (req, res) => {
 
     // Update both users
     await updateUser(organizationId);
-    await updateUser(userId);
+    await updateUser(applicantId);
 
     // Check if there were any errors
     if (errors.length > 0) {

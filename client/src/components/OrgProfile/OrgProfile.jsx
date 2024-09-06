@@ -169,6 +169,21 @@ export default function OrgProfile({ user }) {
 
           </div>
         </section>
+        {/* <section>
+          <div className="flex items-center justify-between my-6">
+            <h2 className="text-xl font-bold">Adoption Applications</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {user?.adoption_applications && user.adoption_applications.length > 0 ? (
+              user?.adoption_applications.map((application) => (
+                <div key={application._id} className="w-full p-2 border-2 border-black">Hello</div>
+              ))
+            ) : (
+              <p>Sorry, no pets available for adoption at this time.</p>
+            )}
+
+          </div>
+        </section> */}
       </main>
       <Dialog>
         <DialogTrigger asChild>

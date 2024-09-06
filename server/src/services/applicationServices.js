@@ -1,4 +1,8 @@
-const { AdoptionApplication, RehomeApplication } = require("../models");
+const {
+  AdoptionApplication,
+  RehomeApplication,
+  FuneralApplication,
+} = require("../models");
 
 class ApplicationServices {
   async createAdoptionApplication(data) {

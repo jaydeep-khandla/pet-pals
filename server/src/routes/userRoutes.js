@@ -5,6 +5,8 @@ const userController = require("../controllers/userController");
 
 router.get("/shelters", userController.fetchOrganizations);
 
+router.get("/:id", userController.fetchUser);
+
 router.post("/multiple", userController.fetchUsersByIds);
 
 module.exports = router;

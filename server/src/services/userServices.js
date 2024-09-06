@@ -1,4 +1,4 @@
-const { User, Pet } = require('../models');
+const { User, Pet } = require("../models");
 
 class UserService {
   async createUser(user) {
@@ -6,20 +6,32 @@ class UserService {
   }
 
   async getUserByField(field, projection = null) {
-    if (projection === null) return await User.findOne(field).populate('pets_ids').exec();
-    
-    return await User.findOne(field).select(projection).populate('pets_ids').exec();
+    let query = User.findOne(field);
+
+    // Apply projection if provided
+    if (projection) {
+      query = query.select(projection);
+    }
+
+    // Populate fields
+    query = query
+      .populate("pets_ids")
+      .populate("adoption_applications")
+      .populate("rehome_applications")
+      .populate("funeral_applications");
+
+    return await query.exec();
   }
 
   async getUsersByField(field, projection = null) {
     if (projection === null) return await User.find(field);
-    
+
     return await User.find(field).select(projection);
   }
 
   async getUsersByIds(ids, projection = null) {
     if (!Array.isArray(ids) || ids.length === 0) {
-      throw new Error('Invalid IDs array');
+      throw new Error("Invalid IDs array");
     }
 
     if (projection === null) {
