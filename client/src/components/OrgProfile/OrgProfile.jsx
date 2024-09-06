@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "../ui/checkbox";
@@ -11,6 +12,7 @@ import { toast } from "react-toastify";
 import ConfirmDialog from "@/components/ConfirmDialog/ConfirmDialog";
 import { imageUpload } from "@/helperFuncs/cloudUpload";
 import axios from "@/Api/axios";
+import DetailDialog from "../DetailDialog/DetailDialog";
 
 export default function OrgProfile({ user }) {
   const [petData, setPetData] = useState({
@@ -49,6 +51,7 @@ export default function OrgProfile({ user }) {
   });
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDetailDialog, setOpenDetailDialog] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const fileInputRef = useRef(null);
 
@@ -120,6 +123,10 @@ export default function OrgProfile({ user }) {
     }
   };
 
+  const handleCloseDialog = () => setOpenDialog(false);
+
+  const handleCloseDetailDialog = () => setOpenDetailDialog(false);
+
   return (
     <div className="bg-background text-foreground my-20">
       <header className="bg-primary text-primary-foreground py-6 px-4 md:px-6">
@@ -169,21 +176,39 @@ export default function OrgProfile({ user }) {
 
           </div>
         </section>
-        {/* <section>
+        <section>
           <div className="flex items-center justify-between my-6">
             <h2 className="text-xl font-bold">Adoption Applications</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {user?.adoption_applications && user.adoption_applications.length > 0 ? (
               user?.adoption_applications.map((application) => (
-                <div key={application._id} className="w-full p-2 border-2 border-black">Hello</div>
+                <>
+                  <Card key={application._id} className="border p-4 rounded-lg shadow-md">
+                    <CardHeader>
+                      <CardTitle>{application.fullName}</CardTitle>
+                      <CardDescription>{application.email}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-2">
+                      <p><strong>City:</strong> {application.city}</p>
+                      <p><strong>State:</strong> {application.state}</p>
+                      <p><strong>Phone:</strong> {application.phoneNumber}</p>
+                      <p><strong>Age Range:</strong> {application.ageRange}</p>
+                      <p><strong>Residence Type:</strong> {application.residenceType}</p>
+                      <p><strong>Status:</strong> {application.status}</p>
+                    </CardContent>
+                    <Button className="mt-4" onClick={() => setOpenDetailDialog(true)}>View Details</Button>
+                  </Card>
+                  <DetailDialog openDialog={openDetailDialog} closeDialog={handleCloseDetailDialog} application={application} />
+                </>
+
               ))
             ) : (
               <p>Sorry, no pets available for adoption at this time.</p>
             )}
 
           </div>
-        </section> */}
+        </section>
       </main>
       <Dialog>
         <DialogTrigger asChild>
@@ -392,6 +417,7 @@ export default function OrgProfile({ user }) {
         </DialogContent>
       </Dialog>
       <ConfirmDialog openDialog={openDialog} closeDialog={() => setOpenDialog(false)} onSubmit={handleSubmit} />
+
     </div>
   );
 }
