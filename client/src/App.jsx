@@ -17,6 +17,8 @@ import ServicesPage from "./components/Services/Services";
 import AboutPage from "./components/aboutPage/aboutPage";
 import ReHomeApplicationForm from "./components/ReHomeForm/ReHomeApplicationForm";
 import FuneralArrangementForm from "./components/FuneralArrangementForm/FuneralArrangementForm";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
+import UpdatePassword from "./components/UpdatePassword/UpdatePassword";
 
 function App() {
   return (
@@ -26,11 +28,12 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify-otp" element={<OtpRoute />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<UpdatePassword />} />
           <Route element={<PersistLogin />}>
-            <Route path="/services" element={<ServicesPage />} />
-
             <Route path="/" element={<Home />} />
             <Route path="/PetList" element={<PetSearchPage />} />
+            <Route path="/services" element={<ServicesPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route element={<RequireAuth />}>

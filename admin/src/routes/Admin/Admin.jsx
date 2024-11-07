@@ -14,7 +14,7 @@ function Admin() {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/users" element={<Users />} />
                     <Route path="/pets" element={<Pets />} />
-                    <Route path="/adoption-application" element={<AdoptionApplication />} />
+                    {/* <Route path="/adoption-application" element={<AdoptionApplication />} /> */}
                     {/* Add a default route */}
                     <Route path="*" element={<Dashboard />} />
                 </Routes>

@@ -3,22 +3,22 @@ import useAuth from "./useAuth";
 import { toast } from "react-toastify";
 
 const useLogout = () => {
-    const { setAuth, setLoggingOut } = useAuth();
+  const { setAuth, setLoggingOut } = useAuth();
 
-    const logout = async () => {
-        setAuth(() => null);
-        setLoggingOut(() => true);
-        try {
-            await axios.get('auth/logout', {
-                withCredentials: true
-            });
-            toast.success("You have been Logged Out");
-        } catch (err) {
-            console.error(err);
-        }
+  const logout = async () => {
+    setAuth(null);
+    setLoggingOut(() => true);
+    try {
+      await axios.get("admin/admin-logout", {
+        withCredentials: true,
+      });
+      toast.success("You have been Logged Out");
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-    return logout;
-}
+  return logout;
+};
 
-export default useLogout
+export default useLogout;

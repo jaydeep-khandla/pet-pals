@@ -107,11 +107,11 @@ export default function AdminDashboard() {
             <Card title='Funeral Applications' count={100} />
             <Card title='Rehome Applications' count={100} />
           </div>
-          <Separator />
-          <div className='flex flex-wrap justify-center gap-6'>
+          {/* <Separator /> */}
+          {/* <div className='flex flex-wrap justify-center gap-6'>
             <Card title='Funeral Applications' count={100} />
             <Card title='Rehome Applications' count={100} />
-          </div>
+          </div> */}
         </> : <b>Loading...</b>}
       </div>
     </div>

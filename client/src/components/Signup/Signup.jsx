@@ -134,57 +134,65 @@ const Signup = ({ onToggle }) => {
               </Select>
             </div>
             <div className="mb-2">
-              <label className="font-bold text-gray-700 text-sm" htmlFor="username">Username</label>
+              <label className="font-bold text-gray-700 text-sm" htmlFor="username">
+                Username
+                {errors.username && <span className="text-red-500 text-sm ml-2">({errors.username})</span>}
+              </label>
               <Input
-                className="mt-1 w-full"
+                className={`mt-1 w-full ${errors.username ? 'border-red-500' : ''}`}
                 type="text"
                 name="username"
                 placeholder="Username"
                 value={formData.username}
                 onChange={handleInputChange}
-              // required
               />
-              {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
             </div>
+
             <div className="mb-2">
-              <label className="font-bold text-gray-700 text-sm" htmlFor="email">Email</label>
+              <label className="font-bold text-gray-700 text-sm" htmlFor="email">
+                Email
+                {errors.email && <span className="text-red-500 text-sm ml-2">({errors.email})</span>}
+              </label>
               <Input
-                className="mt-1 w-full"
+                className={`mt-1 w-full ${errors.email ? 'border-red-500' : ''}`}
                 type="email"
                 name="email"
                 placeholder="eg. example@gmail.com"
                 value={formData.email}
                 onChange={handleInputChange}
-              // required
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
+
             <div className="mb-2">
-              <label className="font-bold text-gray-700 text-sm" htmlFor="password">Password</label>
+              <label className="font-bold text-gray-700 text-sm" htmlFor="password">
+                Password
+                {errors.password && <span className="text-red-500 text-sm ml-2">({errors.password})</span>}
+              </label>
               <Input
-                className="mt-1 w-full"
+                className={`mt-1 w-full ${errors.password ? 'border-red-500' : ''}`}
                 type="password"
                 name="password"
                 placeholder="New Password"
                 value={formData.password}
                 onChange={handleInputChange}
-              // required
               />
-              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
+
             <div className="mb-2">
-              <label className="font-bold text-gray-700 text-sm" htmlFor="confirmPassword">Confirm Password</label>
+              <label className="font-bold text-gray-700 text-sm" htmlFor="confirmPassword">
+                Confirm Password
+                {errors.confirmPassword && <span className="text-red-500 text-sm ml-2">({errors.confirmPassword})</span>}
+              </label>
               <Input
-                className="mt-1 w-full"
+                className={`mt-1 w-full ${errors.confirmPassword ? 'border-red-500' : ''}`}
                 type="password"
                 name="confirmPassword"
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-              // required
               />
-              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
             </div>
+
           </section>
           <Button className="w-full">Sign Up</Button>
         </form>

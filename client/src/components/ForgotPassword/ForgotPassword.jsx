@@ -1,19 +1,20 @@
-import { useRef, useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { verifyOtp } from '@/helperFuncs/verifyotp';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { verifyOtp, sendOtp } from "@/helperFuncs/verifyotp";
 import Bg from "@/assets/images/bg.jpg";
 
-export default function OtpRoute() {
+export default function ForgotPassword() {
     const length = 6;
     const [otp, setOtp] = useState(new Array(length).fill(''));
+    const [isOtpInput, setIsOtpInput] = useState(false);
     const inputRef = useRef([]);
-    // const [otpInput, setOtpInput] = useState('');
+    const [email, setEmail] = useState('');
     const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
-    const email = location.state && location.state.email; //? email from previous route
+    // const location = useLocation();
+    // const email = location.state && location.state.email; //? email from previous route
 
     useEffect(() => {
 
@@ -42,9 +43,11 @@ export default function OtpRoute() {
             // onOtpSubmit({email, combinedOtp}); //? API call to submit OTP, did't implement this
             try {
                 setDisabled(() => true);
-                const response = await verifyOtp({ email, otp: combinedOtp }, false);
+                const response = await verifyOtp({ email, otp: combinedOtp }, true);
                 console.log('verification successful:', response);
-                navigate('/auth');
+                if (response.status == 200) {
+                    navigate('/reset-password', { state: { email } });
+                }
             } catch (error) {
                 console.error('Otp failed:', error);
             }
@@ -86,15 +89,25 @@ export default function OtpRoute() {
         }
     }
 
+    const handleInputChange = (e) => {
+        setEmail(e.target.value);
+    }
+
+    const handleOtpMailSend = async () => {
+        const response = await sendOtp(email);
+        console.log('Otp sent:', response);
+        setIsOtpInput(() => true);
+    }
+
     return (
         <section className='w-full h-screen flex flex-col items-center justify-center' style={{ backgroundImage: `url(${Bg})` }}>
             <div className='h-fit w-fit p-16 flex flex-col items-center justify-center bg-white border-2 border-black rounded-md'>
                 <div className='flex flex-col items-center'>
-                    <h1 className='text-3xl font-bold'>Enter OTP</h1>
-                    <p className='text-gray-500'>OTP sent to {email}</p>
+                    <h1 className='text-3xl font-bold'>{isOtpInput ? "Enter OTP" : "Enter E-mail"}</h1>
+                    {isOtpInput ? <p className='text-gray-500'>OTP sent to {email}</p> : null}
                 </div>
                 <div className='mt-5 flex'>
-                    {
+                    {isOtpInput ?
                         otp.map((value, index) => (
                             <Input
                                 className=' h-12 w-12 p-4 m-2 rounded-lg text-lg text-black text-center border-2 border-black'
@@ -106,14 +119,20 @@ export default function OtpRoute() {
                                 onClick={() => handleOtpClick(index)}
                                 onKeyDown={(e) => handleOtpKeyDown(index, e)}
                             />
-                        ))
+                        )) : <Input
+                            className={`mt-1 w-64 border-black`}
+                            type="email"
+                            name="email"
+                            placeholder="eg. example@gmail.com"
+                            value={email}
+                            onChange={handleInputChange}
+                        />
                     }
                 </div>
                 <div className='m-4 w-full'>
-                    <Button className='w-full' disabled={disabled}>Verify</Button>
+                    {isOtpInput ? <Button className='w-full' disabled={disabled}>Verify</Button> : <Button className='w-full' disabled={disabled} onClick={handleOtpMailSend}>Send OTP</Button>}
                 </div>
             </div>
         </section>
     );
 }
-// onClick={onOtpSubmit({email, combinedOtp})}

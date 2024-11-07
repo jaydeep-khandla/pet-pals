@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import Auth from "@/routes/Auth/Auth";
 import Admin from "@/routes/Admin/Admin";
 import Layout from "@/components/Layout/Layout";
+// import RequireAuth from "./components/RequireAuth/RequireAuth";
 
 function App() {
   return (
@@ -12,8 +13,10 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Auth />} />
+          {/* <Route element={<RequireAuth />}> */}
           <Route path="/admin/*" element={<Admin />} />
         </Route>
+        {/* </Route> */}
       </Routes>
     </>
   );

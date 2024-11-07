@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 
 const Login = ({ onToggle }) => {
   const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
+  const { setAuth } = useAuth();
 
   const [formData, setFormData] = useState({
     userType: "user",
@@ -23,12 +23,32 @@ const Login = ({ onToggle }) => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSelectChange = (value) => {
     setFormData(prevFormData => ({ ...prevFormData, userType: value }));
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email address is invalid";
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    }
+
+    return newErrors;
   };
 
   const handleLoginResponse = (response) => {
@@ -39,34 +59,36 @@ const Login = ({ onToggle }) => {
         navigate('/');
         break;
       case 201:
-        console.log('User is not verified. Otp is sent to your registered Email.');
-        toast.info(response.data.message);
+        toast.info('User is not verified. Otp is sent to your registered Email.');
         navigate('/verify-otp');
         break;
       case 401:
-        console.error('Invalid credentials:', response.data.error);
-        toast.error(response.data.error);
+        toast.error('Invalid credentials');
         break;
       case 500:
-        console.error('Oops..!! Something Broke');
-        toast.error(response.data.error);
+        toast.error('Oops..!! Something Broke');
         break;
       default:
-        console.error('Login failed:', response.data?.error || 'Unknown error');
-        toast.error(response.data?.error || 'Unknown error');
+        toast.error('Login failed: Unknown error');
         break;
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission logic here
+
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors); // Set validation errors if any
+      return;
+    }
+
     const user = {
       userType: formData.userType,
       email: formData.email,
       password: formData.password,
-    }
+    };
+
     try {
       const response = await login(user);
       handleLoginResponse(response);
@@ -80,47 +102,40 @@ const Login = ({ onToggle }) => {
       <h2 className="text-2xl font-bold mb-5">Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className=" block font-bold text-sm mb-1 text-gray-700" htmlFor="userType">Login as</label>
-          <Select onValueChange={handleSelectChange} value={formData.userType} >
+          <label className="block font-bold text-sm mb-1 text-gray-700" htmlFor="userType">Login as</label>
+          <Select onValueChange={handleSelectChange} value={formData.userType}>
             <SelectTrigger>
               <SelectValue placeholder="Select user type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="user" >Adopter</SelectItem>
-              <SelectItem value="animal_shelter" >Shelter</SelectItem>
+              <SelectItem value="user">Adopter</SelectItem>
+              <SelectItem value="animal_shelter">Shelter</SelectItem>
             </SelectContent>
           </Select>
         </div>
+
         <div className="mb-4">
-          <label className=" block font-bold text-sm text-gray-700" htmlFor="email">
+          <label className="block font-bold text-sm text-gray-700" htmlFor="email">
             Email
+            {errors.email && <span className="text-red-500 text-sm ml-2">({errors.email})</span>}
           </label>
-          {/* <input
-            className="w-full px-3 py-2 border bg-stone-200 mt-1"
+          <Input
+            className={`mt-1 ${errors.email ? 'border-red-500' : ''}`}
             type="email"
             name="email"
             placeholder="eg. example@gmail.com"
             value={formData.email}
             onChange={handleInputChange}
-            required
-          /> */}
-          <Input className="mt-1" type="email" name="email" placeholder="eg. example@gmail.com" value={formData.email} onChange={handleInputChange} />
+          />
         </div>
-        <div>
-          <label htmlFor="password" className="block text-sm font-bold text-gray-700 ">
+
+        <div className="mb-4">
+          <label className="block text-sm font-bold text-gray-700" htmlFor="password">
             Password
+            {errors.password && <span className="text-red-500 text-sm ml-2">({errors.password})</span>}
           </label>
-          {/* <input
-            type="password"
-            name="password"
-            placeholder="Enter Password"
-            className="w-full px-3 py-2 border bg-stone-200 mt-1"
-            value={formData.password}
-            onChange={handleInputChange}
-            required
-          /> */}
           <Input
-            className="mt-1"
+            className={`mt-1 ${errors.password ? 'border-red-500' : ''}`}
             type="password"
             name="password"
             placeholder="Enter password"
@@ -128,7 +143,14 @@ const Login = ({ onToggle }) => {
             onChange={handleInputChange}
           />
         </div>
-        <Button className="w-full mt-5">Log In</Button>
+
+        <div className="flex flex-col">
+          <span className="w-full text-right text-blue-500 font-semibold cursor-pointer hover:underline" onClick={() => { navigate("/forgot-password") }}>
+            Forgot Password?
+          </span>
+
+          <Button className="w-full mt-1">Log In</Button>
+        </div>
       </form>
       <p className="mt-4 text-neutral-600 ml-1">
         Don't have an account?{" "}

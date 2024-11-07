@@ -1,18 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const adminController = require('../controllers/adminController');
+const adminController = require("../controllers/adminController");
 
-router.get('/users', adminController.getAllUsers);
+router.get("/users", adminController.getAllUsers);
 
-router.delete('/users/:id', adminController.deleteUser);
+router.delete("/users/:id", adminController.deleteUser);
 
-router.get('/pets', adminController.getAllPets);
+router.get("/pets", adminController.getAllPets);
 
-router.delete('/pets/:id', adminController.deletePet);
+router.delete("/pets/:id", adminController.deletePet);
 
-router.get('/users/count', adminController.getUserCount);
+router.get("/users/count", adminController.getUserCount);
 
-router.get('/pets/count', adminController.getPetCount);
+router.get("/pets/count", adminController.getPetCount);
+
+router.post("/admin-login", adminController.adminLogin);
+
+router.get("/admin-logout", adminController.adminLogout);
 
 // router.get('/adoption-applications/count', adminController.getAdoptionCount);
 

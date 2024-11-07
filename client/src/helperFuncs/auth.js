@@ -40,3 +40,21 @@ export const login = async (user) => {
     return err;
   }
 };
+
+export const setNewPassword = async (email, password) => {
+  try {
+    const response = await axios.post(
+      "/auth/update-password",
+      { email, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response;
+  } catch (err) {
+    console.error(err);
+    return err;
+  }
+};

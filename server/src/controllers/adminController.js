@@ -1,5 +1,8 @@
 const adminServices = require("../services/adminServices");
-const { validateId } = require("../validation/validation");
+const userServices = require("../services/userServices");
+const { validateId, validateAdmin } = require("../validation/validation");
+const bcrypt = require("bcryptjs");
+const jwtServices = require("../services/jwtServices");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -137,5 +140,106 @@ exports.getAdoptionCount = async (req, res) => {
 
     // * Return error message with status code 500
     res.status(500).json({ error: "Oops..!! Something Broke" });
+  }
+};
+
+exports.adminLogin = async (req, res) => {
+  // * Validate user input with JOI
+  const error = validateAdmin(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message });
+
+  try {
+    // * Check if user exists
+    const savedUser = await userServices.getUserByField({
+      userType: req.body.userType,
+      email: req.body.email,
+    });
+
+    // console.log("savedUser: ", savedUser);
+
+    // * If user does not exist, return error message with status code 401
+    if (!savedUser)
+      return res.status(401).json({ error: "Invalid credentials." });
+
+    // * Compare the password with the hashed password
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      savedUser.password
+    );
+
+    // * If password is invalid, return error message with status code 401
+    if (!validPassword)
+      return res.status(401).json({ error: "Invalid credentials." });
+
+    // * Create a payload object with user details
+    const payload = {
+      id: savedUser._id,
+      userType: savedUser.userType,
+      username: savedUser.username,
+      email: savedUser.email,
+    };
+
+    // * Generate access token and refresh token
+    const accessToken = jwtServices.generateAccessToken(payload);
+    const refreshToken = jwtServices.generateRefreshToken(payload);
+
+    // * Update the user's refresh token
+    const filter = { email: req.body.email };
+    const update = { refreshToken };
+    await userServices.updateUserByField(filter, update);
+
+    // * Return the refresh token as cookies
+    res.cookie("jwt", refreshToken, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: "none",
+      secure: true,
+    });
+
+    // * Return the access token with status code 200
+    res.status(200).json({ accessToken });
+  } catch (error) {
+    // * If an error occurs, log the error and return an error message with status code 500
+    console.error("login error: ", error);
+
+    // * Return error message with status code 500
+    res.status(500).json({ error: "Oops..!! Something Broke" });
+  }
+};
+
+exports.adminLogout = async (req, res) => {
+  const cookies = req.cookies;
+
+  // If no refresh token is found in cookies, return error message with status code 401
+  if (!cookies.jwt) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  try {
+    // Find the user by refresh token and update the refresh token to empty
+    const filter = { refreshToken: cookies.jwt };
+    const update = { refreshToken: "" };
+
+    // Use findOneAndUpdate to update the user in one operation
+    const updatedUser = await userServices.updateUserByField(filter, update);
+
+    if (!updatedUser) {
+      // If no user is found with the refresh token, return error message with status code 401
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    // Clear the refresh token from cookies
+    res.clearCookie("jwt");
+
+    // Return success message with status code 200
+    return res.status(200).json({ message: "Logged out successfully." });
+  } catch (error) {
+    // If an error occurs, log the error and return an error message with status code 500
+    console.error("logout error: ", error);
+
+    // Clear the refresh token from cookies
+    res.clearCookie("jwt");
+
+    return res.status(500).json({ error: "Oops..!! Something Broke" });
   }
 };

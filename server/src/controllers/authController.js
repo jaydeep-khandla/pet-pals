@@ -42,7 +42,6 @@ const { addEmailJobToQueue } = require("../config/bullmq_producer");
 */
 
 exports.signup = async (req, res) => {
-
   // * Validate user input wiht JOI
   const error = validateUser(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message });
@@ -90,7 +89,8 @@ exports.signup = async (req, res) => {
     // * Return success message with status code 201
     res.status(201).json({
       email: createdUser.email,
-      message: "Account created successfully. Otp is sent to your registered Email.",
+      message:
+        "Account created successfully. Otp is sent to your registered Email.",
     });
   } catch (error) {
     // * If an error occurs, log the error and return an error message with status code 500
@@ -176,7 +176,7 @@ exports.login = async (req, res) => {
 
 exports.verifyOtp = async (req, res) => {
   // * Validate user input with JOI
-  const error = validateOTP(req.body);
+  const error = validateOTP({ email: req.body.email, otp: req.body.otp });
   if (error) return res.status(400).json({ error: error.details[0].message });
 
   try {
@@ -185,6 +185,11 @@ exports.verifyOtp = async (req, res) => {
 
     // * If OTP is invalid, return error message with status code 401
     if (!isValidOTP) return res.status(401).json({ error: "Invalid OTP." });
+
+    // * Return If updatePassword is true
+    if (req.body.updatePassword) {
+      return res.status(200).json({ message: "OTP verified successfully." });
+    }
 
     // * Find the user by email and update the user's isVerified field to true
     const filter = { email: req.body.email };
@@ -279,5 +284,58 @@ exports.logout = async (req, res) => {
     res.clearCookie("jwt");
 
     return res.status(500).json({ error: "Oops..!! Something Broke" });
+  }
+};
+
+exports.sendOtp = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const savedUser = await userServices.getUserByField({ email });
+
+    if (!savedUser) {
+      return res
+        .status(401)
+        .json({ error: "Account for this email does not exist." });
+    }
+
+    // * Add a job to the queue
+    addEmailJobToQueue({ email });
+
+    // * Return success message with status code 200
+    res.status(200).json({
+      email,
+      message: "Otp is sent to your registered Email.",
+    });
+  } catch (error) {
+    console.error("sendOtp error: ", error);
+    res.status(500).json({ error: "Oops..!! Something Broke" });
+  }
+};
+
+exports.updatePassword = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // const savedUser = await userServices.getUserByField({ email });
+
+    // if (!savedUser) {
+    //   return res
+    //     .status(401)
+    //     .json({ error: "Account for this email does not exist." });
+    // }
+
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const filter = { email };
+    const update = { password: hashedPassword };
+
+    await userServices.updateUserByField(filter, update);
+
+    res.status(200).json({ message: "Password updated successfully." });
+  } catch (error) {
+    console.error("updatePassword error: ", error);
+    res.status(500).json({ error: "Oops..!! Something Broke" });
   }
 };

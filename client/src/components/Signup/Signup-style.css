@@ -2,5 +2,5 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px; /* Adjust the gap as needed */
+  /* gap: 0px; */ /* Adjust the gap as needed */
 }

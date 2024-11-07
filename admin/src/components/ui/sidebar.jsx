@@ -1,11 +1,30 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Separator } from "./separator";
+import { Button } from "./button";
+import useLogout from "@/hooks/useLogout";
+import useAuth from "@/hooks/useAuth";
 
 // Define the Sidebar component
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation(); // Get the current location from React Router
+  const navigate = useNavigate();
+
+  const logout = useLogout();
+  const { setAuth } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      // setAuth(null);
+
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   // Function to determine if a link is active
   const isActive = (path) => location.pathname.startsWith(path);
@@ -52,14 +71,15 @@ export default function Sidebar() {
             <span className={`${isCollapsed ? "hidden" : ""}`}>Pets</span>
           </div>
         </Link>
-        <Link to="/admin/adoption-application">
+        {/* <Link to="/admin/adoption-application">
           <div
             className={`flex items-center gap-2 transition-colors ${isActive("/admin/adoption-application") ? "text-muted-foreground" : "text-muted"} hover:text-muted-foreground`}
           >
             <FileTextIcon className="w-5 h-5" />
             <span className={`${isCollapsed ? "hidden" : ""}`}>Adoption Application</span>
           </div>
-        </Link>
+        </Link> */}
+        <Button onClick={handleLogout}>Logout</Button>
       </div>
     </aside>
   );
